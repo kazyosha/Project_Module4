@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>User Detail</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container mt-4">
+
+        <div class="text-center mb-4">
+            <img th:src="@{/resources/uploads/{url}(url=${user.imageUrl})}"
+                 alt="User Avatar"
+                 class="rounded-circle img-fluid"
+                 style="width: 200px; height: 200px; object-fit: cover;">
+        </div>
+
+        <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+            <div class="card-header text-center">
+                <h5 class="mb-0">User Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">ID</dt>
+                    <dd class="col-sm-8" th:text="${user.id}">1</dd>
+
+                    <dt class="col-sm-4">Username</dt>
+                    <dd class="col-sm-8" th:text="${user.username}"></dd>
+
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8" th:text="${user.email}"></dd>
+
+                    <dt class="col-sm-4">Phone</dt>
+                    <dd class="col-sm-8" th:text="${user.phone}"></dd>
+
+                    <dt class="col-sm-4">Department</dt>
+                    <dd class="col-sm-8" th:text="${user.departmentName}"></dd>
+                </dl>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                <a href="/admin/user" class="btn btn-secondary">Back to list</a>
+                <a th:href="@{/admin/user/{id}/edit(id=${user.id})}" class="btn btn-primary">Edit</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+</body>
+</html>

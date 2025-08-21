@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Update User</title>
+    <!-- Bootstrap 5 CDN -->
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Update User</h5>
+        </div>
+        <div class="card-body">
+            <form th:object="${user}" th:action="@{/admin/user/{id}/edit(id=${user.id})}" method="post" class="form">
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" th:field="*{username}" class="form-control" id="username" aria-describedby="usernameHelp">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" th:field="*{email}" class="form-control" id="email" aria-describedby="emailHelp">
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" th:field="*{phone}" class="form-control" id="phone">
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/admin" class="btn btn-secondary">Back to list</a>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>

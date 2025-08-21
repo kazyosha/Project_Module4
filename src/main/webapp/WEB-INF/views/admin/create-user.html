@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Create User</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="card shadow-sm">
+        <div class="card-header fw-bold">
+            Create User
+        </div>
+        <div class="card-body">
+            <form th:object="${user}" th:action="@{/admin/user/create}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" th:field="*{username}" class="form-control" id="username">
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image</label>
+                    <input type="file" th:field="*{image}" class="form-control" id="image">
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" th:field="*{phone}" class="form-control" id="phone">
+                </div>
+                <div class="mb-3">
+                    <label for="departments" class="form-label">Department</label>
+                    <select th:field="*{departmentId}" class="form-select" id="departments">
+                        <option value="">Choose a department</option>
+                        <option th:each="department : ${departments}"
+                                th:value="${department.id}"
+                                th:text="${department.name}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" th:field="*{email}" class="form-control" id="email">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" th:field="*{password}" class="form-control" id="password">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/admin" class="btn btn-secondary">Back to list</a>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>

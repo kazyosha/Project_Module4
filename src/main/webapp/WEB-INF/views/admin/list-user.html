@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>User List</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3">User List</h1>
+        <a class="btn btn-success" href="/admin/user/create">+ Create User</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user, userStat : ${users}">
+                    <td th:text="${userStat.index + 1}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td><img th:src="@{/resources/uploads/{url}(url=${user.imageUrl})}" width="80" class="img-thumbnail"/></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.phone}"></td>
+                    <td th:text="${user.departmentName}"></td>
+                    <td>
+                        <a class="btn btn-sm btn-info" th:href="@{/admin/user/{id}/detail(id=${user.id})}">Detail</a>
+                        <a class="btn btn-sm btn-primary" th:href="@{/admin/user/{id}/edit(id=${user.id})}">Edit</a>
+                        <a class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure?')"
+                           th:href="@{/admin/user/{id}/delete(id=${user.id})}">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Department</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <h1 class="mt-5">Department List</h1>
+        <a class="btn btn-success" href="/admin/department/create">Create Department</a>
+        <table class="table table-striped mt-3">
+            <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Name</th>
+                <th></th>
+                <th></th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="department, userStat : ${departments}">
+                <td th:text="${userStat.index + 1}"></td>
+                <td th:text="${department.getName()}"></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a class="btn btn-danger" onclick="return confirm('Are you sure')" th:href="@{/admin/department/{id}/delete(id=${department.getId()})}">Delete</a>
+                    <a class="btn btn-primary" th:href="@{/admin/department/{id}/edit(id=${department.getId()})}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>
