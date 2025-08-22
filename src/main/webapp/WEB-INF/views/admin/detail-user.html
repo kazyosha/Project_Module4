@@ -10,8 +10,7 @@
     <div class="container mt-4">
 
         <div class="text-center mb-4">
-            <img th:src="@{/resources/uploads/{url}(url=${user.imageUrl})}"
-                 alt="User Avatar"
+            <img th:src="@{/uploads/{img}(img=${user.imageUrl})}" alt="User Avatar"
                  class="rounded-circle img-fluid"
                  style="width: 200px; height: 200px; object-fit: cover;">
         </div>
@@ -39,7 +38,7 @@
                 </dl>
             </div>
             <div class="card-footer d-flex justify-content-between">
-                <a href="/admin/user" class="btn btn-secondary">Back to list</a>
+                <a href="/admin" class="btn btn-secondary">Back to list</a>
                 <a th:href="@{/admin/user/{id}/edit(id=${user.id})}" class="btn btn-primary">Edit</a>
             </div>
         </div>

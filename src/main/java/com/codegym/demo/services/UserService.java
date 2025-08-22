@@ -7,10 +7,15 @@ import com.codegym.demo.models.Department;
 import com.codegym.demo.models.User;
 import com.codegym.demo.repositories.IDepartmentRepository;
 import com.codegym.demo.repositories.IUserRepository;
+import com.codegym.demo.repositories.response.ListUserResponse;
+import com.codegym.demo.untils.FileManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,18 +23,24 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private static final String UPLOAD_DIR = "C:\\Users\\MTNB158\\IdeaProjects\\Module4_project\\src\\main\\webapp\\WEB-INF\\resources\\uploads";
+    private final String uploadDir = "F:/uploads/";
     private final IUserRepository userRepository;
     private final IDepartmentRepository departmentRepository;
+    private final FileManager fileManager;
 
-    public UserService(IUserRepository userRepository, IDepartmentRepository departmentRepository){
+    public UserService(IUserRepository userRepository, IDepartmentRepository departmentRepository, FileManager fileManager) {
         this.userRepository = userRepository;
         this.departmentRepository = departmentRepository;
+        this.fileManager = fileManager;
     }
 
-    public List<UserDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        // map data Entity to DTO
+    public ListUserResponse getAllUsers(int pageNumber, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
+        Page<User> data = userRepository.findAll(pageable);
+
+        List<User> users = data.getContent();
+
         List<UserDTO> userDTOs = new ArrayList<>();
         for (User user : users) {
             UserDTO userDTO = new UserDTO();
@@ -43,22 +54,22 @@ public class UserService {
             userDTO.setDepartmentName(nameDepartment);
 
             userDTOs.add(userDTO);
+
         }
-        return userDTOs;
+
+        ListUserResponse listUserResponse = new ListUserResponse();
+        listUserResponse.setTotalPage(data.getTotalPages());
+        listUserResponse.setCurrentPage(data.getNumber() + 1);
+        listUserResponse.setUsers(userDTOs);
+
+        return listUserResponse;
     }
 
-    public void deleteById(int id){
-        // Logic to delete a user by ID
-        Optional<User> user = userRepository.findById((long)(id));
+    public void deleteById(int id) {
+        Optional<User> user = userRepository.findById((long) (id));
         if (user.isPresent()) {
             User currentUser = user.get();
-            // delete image
-            File imageFile = new File(UPLOAD_DIR + "/" + currentUser.getImageUrl());
-            if (imageFile.exists()) {
-                imageFile.delete(); // Delete the image file
-            } else {
-                System.out.println("Image file not found: " + imageFile.getAbsolutePath());
-            }
+            fileManager.deleteFile(uploadDir + "/" + currentUser.getImageUrl());
             userRepository.delete(currentUser);
         } else {
             throw new RuntimeException("User not found with id: " + id);
@@ -66,7 +77,6 @@ public class UserService {
     }
 
     public void storeUser(CreateUserDTO createUserDTO) throws IOException {
-        // Logic to store a new user
         String username = createUserDTO.getUsername();
         String password = createUserDTO.getPassword();
         String email = createUserDTO.getEmail();
@@ -80,19 +90,11 @@ public class UserService {
 
         Long departmentId = createUserDTO.getDepartmentId();
         MultipartFile file = createUserDTO.getImage();
-        System.out.println("File: " + file);
 
         if (!file.isEmpty()) {
-            String fileName = file.getOriginalFilename();
-
-            File uploadDir = new File(UPLOAD_DIR);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
-
-            File dest = new File(UPLOAD_DIR + "/" + fileName);
-            file.transferTo(dest);
-            newUser.setImageUrl(fileName); // Set the image URL
+            String fileName = fileManager.uploadFile(uploadDir, file);
+            System.out.println("Saved file at: " + uploadDir + "/" + fileName);
+            newUser.setImageUrl(fileName);
         }
 
         if (departmentId != null) {
@@ -103,7 +105,8 @@ public class UserService {
         }
         userRepository.save(newUser);
     }
-//
+
+    //
     public UserDTO getUserById(int id) {
         Optional<User> user = userRepository.findById((long) id);
         if (user.isPresent()) {
@@ -114,20 +117,34 @@ public class UserService {
             userDTO.setEmail(currentUser.getEmail());
             userDTO.setPhone(currentUser.getPhone());
             userDTO.setImageUrl(currentUser.getImageUrl());
-            userDTO.setDepartmentName(currentUser.getDepartment() != null ? currentUser.getDepartment().getName() : "No Department");
+            userDTO.setDepartmentId(currentUser.getDepartment() != null ? currentUser.getDepartment().getId() : null);
             return userDTO;
         }
         return null;
     }
-//
+
+    //
     public void updateUser(int id, EditUserDTO editUserDTO) {
-        Optional<User> user = userRepository.findById((long)id);
+        Optional<User> user = userRepository.findById((long) id);
         if (user.isPresent()) {
-            // Update user details
             User currentUser = user.get();
             currentUser.setName(editUserDTO.getUsername());
             currentUser.setEmail(editUserDTO.getEmail());
             currentUser.setPhone(editUserDTO.getPhone());
+
+            Long departmentId = editUserDTO.getDepartmentId();
+            if (departmentId != null) {
+                Department department = departmentRepository.findById(departmentId).orElse(null);
+                if (department != null) {
+                    currentUser.setDepartment(department);
+                }
+            }
+            MultipartFile file = editUserDTO.getImage();
+            if (!file.isEmpty()) {
+                fileManager.deleteFile(uploadDir + "/" + currentUser.getImageUrl());
+                String fileName = fileManager.uploadFile(uploadDir, file);
+                currentUser.setImageUrl(fileName);
+            }
             userRepository.save(currentUser);
         }
     }

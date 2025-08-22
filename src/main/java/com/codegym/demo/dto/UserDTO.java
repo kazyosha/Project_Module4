@@ -8,6 +8,8 @@ public class UserDTO {
     private String phone;
     private String imageUrl;
     private String departmentName;
+    private Long departmentId;
+
     public UserDTO() {
     }
 
@@ -80,5 +82,13 @@ public class UserDTO {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
+    }
+
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
 }

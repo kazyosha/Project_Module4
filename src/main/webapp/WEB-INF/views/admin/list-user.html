@@ -30,7 +30,7 @@
                 <tr th:each="user, userStat : ${users}">
                     <td th:text="${userStat.index + 1}"></td>
                     <td th:text="${user.username}"></td>
-                    <td><img th:src="@{/resources/uploads/{url}(url=${user.imageUrl})}" width="80" class="img-thumbnail"/></td>
+                    <td><img th:src="@{/uploads/{img}(img=${user.imageUrl})}" alt="User Avatar" width="80px"></td>
                     <td th:text="${user.email}"></td>
                     <td th:text="${user.phone}"></td>
                     <td th:text="${user.departmentName}"></td>
@@ -42,6 +42,31 @@
                            th:href="@{/admin/user/{id}/delete(id=${user.id})}">Delete</a>
                     </td>
                 </tr>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+
+                        <!-- Previous -->
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin(page=${currentPage - 1}, size=5)}">Previous</a>
+                        </li>
+
+                        <!-- Trang -->
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/admin(page=${i}, size=5)}" th:text="${i}"></a>
+                        </li>
+
+                        <!-- Next -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin(page=${currentPage + 1}, size=5)}">Next</a>
+                        </li>
+
+                    </ul>
+                </nav>
+                </nav>
                 </tbody>
             </table>
         </div>

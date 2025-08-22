@@ -14,7 +14,6 @@ public class Department {
     @Column(nullable = false)
     private String name;
 
-    // relationship with User can be added here if needed
     @OneToMany(mappedBy = "department")
     private List<User> users;
 

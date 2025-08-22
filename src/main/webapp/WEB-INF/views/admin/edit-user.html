@@ -13,7 +13,7 @@
             <h5 class="mb-0">Update User</h5>
         </div>
         <div class="card-body">
-            <form th:object="${user}" th:action="@{/admin/user/{id}/edit(id=${user.id})}" method="post" class="form">
+            <form th:object="${user}" th:action="@{/admin/user/{id}/edit(id=${user.id})}" method="post" class="form" enctype="multipart/form-data">
 
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
@@ -28,6 +28,20 @@
                 <div class="mb-3">
                     <label for="phone" class="form-label">Phone</label>
                     <input type="text" th:field="*{phone}" class="form-control" id="phone">
+                </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image</label>
+                    <input type="file" th:field="${user.image}" class="form-control" id="image" aria-describedby="usernameHelp" name="image">
+                </div>
+
+                <div class="mb-3">
+                    <label for="departments" class="form-label">Department</label>
+                    <select class="form-select" th:field="${user.departmentId}" id="departments" name="departmentId">
+                        <option value="" selected>Choose a department</option>
+
+                        <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}" th:selected="${user.departmentId == department.id}"></option>
+                    </select>
                 </div>
 
                 <div class="d-flex justify-content-between">

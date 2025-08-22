@@ -4,10 +4,13 @@ import com.codegym.demo.dto.CreateUserDTO;
 import com.codegym.demo.dto.DepartmentDTO;
 import com.codegym.demo.dto.EditUserDTO;
 import com.codegym.demo.dto.UserDTO;
+import com.codegym.demo.repositories.response.ListUserResponse;
 import com.codegym.demo.services.DepartmentService;
 import com.codegym.demo.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -25,9 +28,17 @@ public class UserController {
     }
 
     @GetMapping
-    public String listUsers(Model model) {
-        List<UserDTO> users = userService.getAllUsers();
+    public String listUsers(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                            @RequestParam(value = "size", required = false, defaultValue = "5") int size,
+                            Model model) {
+        if (page < 1) page = 1;
+        int zeroBasedPage = page - 1;
+
+        ListUserResponse listUserResponse = userService.getAllUsers(zeroBasedPage, size);
+        List<UserDTO> users = listUserResponse.getUsers();
         // Logic to list users
+        model.addAttribute("totalPages", listUserResponse.getTotalPage());
+        model.addAttribute("currentPage", page);
         model.addAttribute("users", users);
         return "admin/list-user";
     }
@@ -60,8 +71,12 @@ public class UserController {
     }
 
     @PostMapping("/user/create")
-    public String storeUser(@ModelAttribute("user") CreateUserDTO
-                                        createUserDTO) throws IOException {
+    public String storeUser(@Valid @ModelAttribute("user") CreateUserDTO createUserDTO,
+                                    BindingResult result, Model model) throws IOException {
+        if (result.hasErrors()) {
+            model.addAttribute("departments", departmentService.getAllDepartments());
+            return "admin/create-user";
+        }
         userService.storeUser(createUserDTO);
         return "redirect:/admin";
     }
@@ -69,6 +84,7 @@ public class UserController {
     @GetMapping("/user/{id}/edit")
     public String showFormEdit(@PathVariable("id") int id, Model model) {
         UserDTO user = userService.getUserById(id);
+        System.out.println(user);
         if (user == null) {
             return "redirect:/admin";
         }
@@ -79,8 +95,11 @@ public class UserController {
                 user.getEmail(),
                 user.getPhone()
         );
+        editUserDTO.setDepartmentId(user.getDepartmentId());
 
+        List<DepartmentDTO> departments = departmentService.getAllDepartments();
         model.addAttribute("user", editUserDTO);
+        model.addAttribute("departments", departments);
 
         return "admin/edit-user";
     }

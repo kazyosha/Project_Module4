@@ -36,15 +36,15 @@ public class JpaConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource);
-        emf.setPackagesToScan("com.codegym.demo.models"); // nơi đặt @Entity
+        emf.setPackagesToScan("com.codegym.demo.models");
         emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        emf.setJpaProperties(jpaProperties());      // Hibernate props
+        emf.setJpaProperties(jpaProperties());
         return emf;
     }
 
     private Properties jpaProperties() {
         Properties props = new Properties();
-        props.put("hibernate.hbm2ddl.auto", "update");            // dev: update / validate / none
+        props.put("hibernate.hbm2ddl.auto", "update");
         props.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         props.put("hibernate.show_sql", "true");
         props.put("hibernate.format_sql", "true");

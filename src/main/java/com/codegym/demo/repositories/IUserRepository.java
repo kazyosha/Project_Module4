@@ -1,10 +1,14 @@
 package com.codegym.demo.repositories;
 
 import com.codegym.demo.models.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface IUserRepository extends JpaRepository<User , Long> {
+import java.util.Optional;
 
+@Repository
+public interface IUserRepository extends PagingAndSortingRepository<User , Long> {
+    Optional<User> findById(Long id);
+    void delete(User user);
+    void save(User user);
 }
