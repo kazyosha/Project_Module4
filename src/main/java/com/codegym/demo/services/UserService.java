@@ -118,6 +118,7 @@ public class UserService {
             userDTO.setPhone(currentUser.getPhone());
             userDTO.setImageUrl(currentUser.getImageUrl());
             userDTO.setDepartmentId(currentUser.getDepartment() != null ? currentUser.getDepartment().getId() : null);
+            userDTO.setDepartmentName(currentUser.getDepartment() != null ? currentUser.getDepartment().getName() : "No Department");
             return userDTO;
         }
         return null;

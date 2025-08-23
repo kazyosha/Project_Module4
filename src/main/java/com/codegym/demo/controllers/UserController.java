@@ -106,10 +106,16 @@ public class UserController {
 
     @PostMapping("/user/{id}/edit")
     public String updateUser(@PathVariable("id") int id,
-                             @ModelAttribute("user") EditUserDTO editUserDTO) {
+                             @Valid @ModelAttribute("user") EditUserDTO editUserDTO,
+                             BindingResult result, Model model) {
         UserDTO user = userService.getUserById(id);
         if (user == null) {
             return "redirect:/admin";
+        }
+        if (result.hasErrors()) {
+            List<DepartmentDTO> departments = departmentService.getAllDepartments();
+            model.addAttribute("departments", departments);
+            return "admin/edit-user";
         }
         userService.updateUser(id, editUserDTO);
         return "redirect:/admin";

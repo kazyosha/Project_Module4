@@ -18,28 +18,41 @@
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" th:field="*{username}" class="form-control" id="username" aria-describedby="usernameHelp">
+                    <div th:if="${#fields.hasErrors('username')}"
+                         th:errors="*{username}"
+                         class="text-danger">
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="email" class="form-label">Email address</label>
                     <input type="email" th:field="*{email}" class="form-control" id="email" aria-describedby="emailHelp">
+                    <div th:if="${#fields.hasErrors('email')}"
+                         th:errors="*{email}"
+                         class="text-danger">
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="phone" class="form-label">Phone</label>
                     <input type="text" th:field="*{phone}" class="form-control" id="phone">
+                    <div th:if="${#fields.hasErrors('phone')}"
+                         th:errors="*{phone}"
+                         class="text-danger"></div>
                 </div>
 
                 <div class="mb-3">
                     <label for="image" class="form-label">Image</label>
                     <input type="file" th:field="${user.image}" class="form-control" id="image" aria-describedby="usernameHelp" name="image">
+                    <div th:if="${#fields.hasErrors('image')}"
+                         th:errors="*{image}"
+                         class="text-danger"></div>
                 </div>
 
                 <div class="mb-3">
                     <label for="departments" class="form-label">Department</label>
                     <select class="form-select" th:field="${user.departmentId}" id="departments" name="departmentId">
                         <option value="" selected>Choose a department</option>
-
                         <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}" th:selected="${user.departmentId == department.id}"></option>
                     </select>
                 </div>
