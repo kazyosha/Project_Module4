@@ -55,6 +55,20 @@
                         <option value="" selected>Choose a department</option>
                         <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}" th:selected="${user.departmentId == department.id}"></option>
                     </select>
+                    <div th:if="${#fields.hasErrors('departmentId')}"
+                         th:errors="*{departmentId}"
+                         class="text-danger">
+                    </div>
+                    <label for="roles" class="form-label">Role</label>
+                    <select th:field="*{roleId}" class="form-select" id="roles">
+                        <option value="">Choose a role</option>
+                        <option th:each="role : ${roles}"
+                                th:value="${role.id}"
+                                th:text="${role.name}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('roleId')}"
+                         th:errors="*{roleId}">
+                    </div>
                 </div>
 
                 <div class="d-flex justify-content-between">

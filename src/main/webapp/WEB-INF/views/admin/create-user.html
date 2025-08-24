@@ -18,21 +18,24 @@
                     <input type="text" th:field="*{username}" class="form-control" id="username">
                     <div th:if="${#fields.hasErrors('username')}"
                          th:errors="*{username}"
-                         class="text-danger"></div>
+                         class="text-danger">
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="image" class="form-label">Image</label>
                     <input type="file" th:field="*{image}" class="form-control" id="image">
                     <div th:if="${#fields.hasErrors('image')}"
                          th:errors="*{image}"
-                         class="text-danger"></div>
+                         class="text-danger">
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label">Phone</label>
                     <input type="text" th:field="*{phone}" class="form-control" id="phone">
                     <div th:if="${#fields.hasErrors('phone')}"
                          th:errors="*{phone}"
-                         class="text-danger"></div>
+                         class="text-danger">
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="departments" class="form-label">Department</label>
@@ -44,24 +47,35 @@
                     </select>
                     <div th:if="${#fields.hasErrors('departmentId')}"
                          th:errors="*{departmentId}"
-                         class="text-danger"></div>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email address</label>
-                    <input type="email" th:field="*{email}" class="form-control" id="email">
-                    <div th:if="${#fields.hasErrors('email')}"
-                         th:errors="*{email}"
-                         class="text-danger"></div>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" th:field="*{password}" class="form-control" id="password">
-                    <div th:if="${#fields.hasErrors('password')}"
-                         th:errors="*{password}"
-                         class="text-danger"></div>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <a href="/admin" class="btn btn-secondary">Back to list</a>
+                         class="text-danger">
+                    </div>
+
+                    <label for="roles" class="form-label">Role</label>
+                    <select th:field="*{roleId}" class="form-select" id="roles">
+                        <option value="">Choose a role</option>
+                        <option th:each="role : ${roles}"
+                                th:value="${role.id}"
+                                th:text="${role.name}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('roleId')}"
+                         th:errors="*{roleId}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" th:field="*{email}" class="form-control" id="email">
+                        <div th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}"
+                             class="text-danger"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" th:field="*{password}" class="form-control" id="password">
+                        <div th:if="${#fields.hasErrors('password')}"
+                             th:errors="*{password}"
+                             class="text-danger"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <a href="/admin" class="btn btn-secondary">Back to list</a>
             </form>
         </div>
     </div>

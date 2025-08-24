@@ -23,6 +23,7 @@
                     <th scope="col">Email</th>
                     <th scope="col">Phone</th>
                     <th scope="col">Department</th>
+                    <th scope="col">Role</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
@@ -34,6 +35,7 @@
                     <td th:text="${user.email}"></td>
                     <td th:text="${user.phone}"></td>
                     <td th:text="${user.departmentName}"></td>
+                    <td th:text="${user.roleName}"></td>
                     <td>
                         <a class="btn btn-sm btn-info" th:href="@{/admin/user/{id}/detail(id=${user.id})}">Detail</a>
                         <a class="btn btn-sm btn-primary" th:href="@{/admin/user/{id}/edit(id=${user.id})}">Edit</a>
@@ -44,26 +46,19 @@
                 </tr>
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
-
-                        <!-- Previous -->
                         <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                             <a class="page-link"
                                th:href="@{/admin(page=${currentPage - 1}, size=5)}">Previous</a>
                         </li>
-
-                        <!-- Trang -->
                         <li class="page-item"
                             th:each="i : ${#numbers.sequence(1, totalPages)}"
                             th:classappend="${i == currentPage} ? 'active'">
                             <a class="page-link" th:href="@{/admin(page=${i}, size=5)}" th:text="${i}"></a>
                         </li>
-
-                        <!-- Next -->
                         <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
                             <a class="page-link"
                                th:href="@{/admin(page=${currentPage + 1}, size=5)}">Next</a>
                         </li>
-
                     </ul>
                 </nav>
                 </nav>

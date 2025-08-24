@@ -9,6 +9,8 @@ public class UserDTO {
     private String imageUrl;
     private String departmentName;
     private Long departmentId;
+    private String roleName;
+    private Long roleId;
 
     public UserDTO() {
     }
@@ -90,5 +92,21 @@ public class UserDTO {
 
     public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 }

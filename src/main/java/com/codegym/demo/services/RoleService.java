@@ -1,0 +1,29 @@
+package com.codegym.demo.services;
+
+import com.codegym.demo.dto.RoleDTO;
+import com.codegym.demo.models.Role;
+import com.codegym.demo.repositories.IRole;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class RoleService {
+
+    private IRole roleRepository;
+    public RoleService(IRole roleRepository) {
+        this.roleRepository = roleRepository;
+    }
+    public List<RoleDTO> getAllRoles(){
+        List<Role> roles = roleRepository.findAll();
+        List<RoleDTO> list = new ArrayList<>();
+        for (Role role : roles) {
+            RoleDTO roleDTO = new RoleDTO();
+            roleDTO.setId(role.getId());
+            roleDTO.setName(role.getName());
+            list.add(roleDTO);
+        }
+        return list;
+    }
+}

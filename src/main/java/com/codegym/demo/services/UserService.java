@@ -4,8 +4,10 @@ import com.codegym.demo.dto.CreateUserDTO;
 import com.codegym.demo.dto.EditUserDTO;
 import com.codegym.demo.dto.UserDTO;
 import com.codegym.demo.models.Department;
+import com.codegym.demo.models.Role;
 import com.codegym.demo.models.User;
 import com.codegym.demo.repositories.IDepartmentRepository;
+import com.codegym.demo.repositories.IRole;
 import com.codegym.demo.repositories.IUserRepository;
 import com.codegym.demo.repositories.response.ListUserResponse;
 import com.codegym.demo.untils.FileManager;
@@ -27,11 +29,13 @@ public class UserService {
     private final IUserRepository userRepository;
     private final IDepartmentRepository departmentRepository;
     private final FileManager fileManager;
+    private final IRole roleRepository;
 
-    public UserService(IUserRepository userRepository, IDepartmentRepository departmentRepository, FileManager fileManager) {
+    public UserService(IUserRepository userRepository, IDepartmentRepository departmentRepository, FileManager fileManager, IRole roleRepository) {
         this.userRepository = userRepository;
         this.departmentRepository = departmentRepository;
         this.fileManager = fileManager;
+        this.roleRepository = roleRepository;
     }
 
     public ListUserResponse getAllUsers(int pageNumber, int pageSize) {
@@ -51,7 +55,9 @@ public class UserService {
             userDTO.setImageUrl(user.getImageUrl());
 
             String nameDepartment = user.getDepartment() != null ? user.getDepartment().getName() : "No Department";
+            String nameRole = user.getRole() != null ? user.getRole().getName() : "No Role";
             userDTO.setDepartmentName(nameDepartment);
+            userDTO.setRoleName(nameRole);
 
             userDTOs.add(userDTO);
 
@@ -89,6 +95,7 @@ public class UserService {
         newUser.setPhone(phone);
 
         Long departmentId = createUserDTO.getDepartmentId();
+        Long roleId = createUserDTO.getRoleId();
         MultipartFile file = createUserDTO.getImage();
 
         if (!file.isEmpty()) {
@@ -103,10 +110,17 @@ public class UserService {
                 newUser.setDepartment(department);
             }
         }
+        if (roleId != null) {
+            Role role = roleRepository.findById(roleId).orElse(null);
+            if (role != null) {
+                newUser.setRole(role);
+            } else {
+                throw new RuntimeException("Role not found with id: " + roleId);
+            }
+        }
         userRepository.save(newUser);
     }
 
-    //
     public UserDTO getUserById(int id) {
         Optional<User> user = userRepository.findById((long) id);
         if (user.isPresent()) {
@@ -119,6 +133,8 @@ public class UserService {
             userDTO.setImageUrl(currentUser.getImageUrl());
             userDTO.setDepartmentId(currentUser.getDepartment() != null ? currentUser.getDepartment().getId() : null);
             userDTO.setDepartmentName(currentUser.getDepartment() != null ? currentUser.getDepartment().getName() : "No Department");
+            userDTO.setRoleId(currentUser.getRole() != null ? currentUser.getRole().getId() : null);
+            userDTO.setRoleName(currentUser.getRole() != null ? currentUser.getRole().getName() : "No Role");
             return userDTO;
         }
         return null;
@@ -134,10 +150,19 @@ public class UserService {
             currentUser.setPhone(editUserDTO.getPhone());
 
             Long departmentId = editUserDTO.getDepartmentId();
+            Long roleId = editUserDTO.getRoleId();
             if (departmentId != null) {
                 Department department = departmentRepository.findById(departmentId).orElse(null);
                 if (department != null) {
                     currentUser.setDepartment(department);
+                }
+            }
+            if (roleId != null) {
+                Role role = roleRepository.findById(roleId).orElse(null);
+                if (role != null) {
+                    currentUser.setRole(role);
+                } else {
+                    throw new RuntimeException("Role not found with id: " + roleId);
                 }
             }
             MultipartFile file = editUserDTO.getImage();

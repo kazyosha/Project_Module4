@@ -24,6 +24,7 @@ public class EditUserDTO {
 
     private MultipartFile image;
     private Long departmentId;
+    private Long roleId;
 
     public EditUserDTO() {
     }
@@ -70,13 +71,24 @@ public class EditUserDTO {
     public MultipartFile getImage() {
         return image;
     }
+
     public void setImage(MultipartFile image) {
         this.image = image;
     }
+
     public Long getDepartmentId() {
         return departmentId;
     }
+
     public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
     }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
 }
+

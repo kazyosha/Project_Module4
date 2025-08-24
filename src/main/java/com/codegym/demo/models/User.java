@@ -1,10 +1,6 @@
 package com.codegym.demo.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -31,6 +27,10 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = true)
     private Department department;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = true)
+    private Role role;
 
     public User() {
     }
@@ -89,5 +89,13 @@ public class User {
 
     public Department getDepartment() {
         return department;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
     }
 }

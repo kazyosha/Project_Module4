@@ -1,11 +1,9 @@
 package com.codegym.demo.controllers;
 
-import com.codegym.demo.dto.CreateUserDTO;
-import com.codegym.demo.dto.DepartmentDTO;
-import com.codegym.demo.dto.EditUserDTO;
-import com.codegym.demo.dto.UserDTO;
+import com.codegym.demo.dto.*;
 import com.codegym.demo.repositories.response.ListUserResponse;
 import com.codegym.demo.services.DepartmentService;
+import com.codegym.demo.services.RoleService;
 import com.codegym.demo.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -21,10 +19,12 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final DepartmentService departmentService;
+    private final RoleService roleService;
 
-    public UserController(UserService userService, DepartmentService departmentService) {
+    public UserController(UserService userService, DepartmentService departmentService, RoleService roleService) {
         this.userService = userService;
         this.departmentService = departmentService;
+        this.roleService = roleService;
     }
 
     @GetMapping
@@ -47,6 +47,8 @@ public class UserController {
     public String createUser(Model model) {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         List<DepartmentDTO> departments = departmentService.getAllDepartments();
+        List<RoleDTO> roles = roleService.getAllRoles();
+        model.addAttribute("roles", roles);
         model.addAttribute("departments", departments);
         model.addAttribute("user", createUserDTO);
 
@@ -82,9 +84,8 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}/edit")
-    public String showFormEdit(@PathVariable("id") int id, Model model) {
+    public String showFormEdit(@Valid @PathVariable("id") int id, Model model) {
         UserDTO user = userService.getUserById(id);
-        System.out.println(user);
         if (user == null) {
             return "redirect:/admin";
         }
@@ -96,10 +97,13 @@ public class UserController {
                 user.getPhone()
         );
         editUserDTO.setDepartmentId(user.getDepartmentId());
+        editUserDTO.setRoleId(user.getRoleId());
 
         List<DepartmentDTO> departments = departmentService.getAllDepartments();
+        List<RoleDTO> roles = roleService.getAllRoles();
         model.addAttribute("user", editUserDTO);
         model.addAttribute("departments", departments);
+        model.addAttribute("roles", roles);
 
         return "admin/edit-user";
     }
@@ -114,6 +118,8 @@ public class UserController {
         }
         if (result.hasErrors()) {
             List<DepartmentDTO> departments = departmentService.getAllDepartments();
+            List<RoleDTO> roles = roleService.getAllRoles();
+            model.addAttribute("roles", roles);
             model.addAttribute("departments", departments);
             return "admin/edit-user";
         }
