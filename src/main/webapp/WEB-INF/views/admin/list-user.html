@@ -4,6 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <title>User List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
 <section layout:fragment="content">
@@ -11,6 +12,20 @@
         <h1 class="h3">User List</h1>
         <a class="btn btn-success" href="/admin/user/create">+ Create User</a>
     </div>
+
+    <form th:action="@{/admin}" method="get" class="mb-3 d-flex">
+        <select class="form-select me-2" name="departmentId" onchange="this.form.submit()">
+            <option value="" th:selected="${selectedDepartmentId == null}">-- All Departments --</option>
+            <option th:each="dept : ${departments}"
+                    th:value="${dept.id}"
+                    th:text="${dept.name}"
+                    th:selected="${dept.id == selectedDepartmentId}">
+            </option>
+        </select>
+        <noscript>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </noscript>
+    </form>
 
     <div class="card shadow-sm">
         <div class="card-body">
@@ -37,33 +52,59 @@
                     <td th:text="${user.departmentName}"></td>
                     <td th:text="${user.roleName}"></td>
                     <td>
-                        <a class="btn btn-sm btn-info" th:href="@{/admin/user/{id}/detail(id=${user.id})}">Detail</a>
-                        <a class="btn btn-sm btn-primary" th:href="@{/admin/user/{id}/edit(id=${user.id})}">Edit</a>
+                        <!-- Detail -->
+                        <a class="btn btn-sm btn-info" th:href="@{/admin/user/{id}/detail(id=${user.id})}" title="Detail">
+                            <i class="bi bi-eye"></i>
+                        </a>
+
+                        <!-- Edit -->
+                        <a class="btn btn-sm btn-primary" th:href="@{/admin/user/{id}/edit(id=${user.id})}" title="Edit">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+
+                        <!-- Delete -->
                         <a class="btn btn-sm btn-danger"
                            onclick="return confirm('Are you sure?')"
-                           th:href="@{/admin/user/{id}/delete(id=${user.id})}">Delete</a>
+                           th:href="@{/admin/user/{id}/delete(id=${user.id})}"
+                           title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </a>
                     </td>
                 </tr>
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                            <a class="page-link"
-                               th:href="@{/admin(page=${currentPage - 1}, size=5)}">Previous</a>
-                        </li>
-                        <li class="page-item"
-                            th:each="i : ${#numbers.sequence(1, totalPages)}"
-                            th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{/admin(page=${i}, size=5)}" th:text="${i}"></a>
-                        </li>
-                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                            <a class="page-link"
-                               th:href="@{/admin(page=${currentPage + 1}, size=5)}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
                 </nav>
                 </tbody>
             </table>
+            <nav aria-label="User pagination">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Nút Previous -->
+                    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{${baseUrl}(page=${currentPage - 1})}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <!-- Các trang -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{${baseUrl}(page=${i})}"
+                           th:text="${i}"></a>
+                    </li>
+
+                    <!-- Nút Next -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{${baseUrl}(page=${currentPage + 1})}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </section>

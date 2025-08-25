@@ -174,4 +174,32 @@ public class UserService {
             userRepository.save(currentUser);
         }
     }
+    public ListUserResponse getUsersByDepartment(Long departmentId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
+        Page<User> data = userRepository.findByDepartmentId(departmentId, pageable);
+
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : data.getContent()) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId().intValue());
+            userDTO.setUsername(user.getName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setPhone(user.getPhone());
+            userDTO.setImageUrl(user.getImageUrl());
+
+            String nameDepartment = user.getDepartment() != null ? user.getDepartment().getName() : "No Department";
+            String nameRole = user.getRole() != null ? user.getRole().getName() : "No Role";
+            userDTO.setDepartmentName(nameDepartment);
+            userDTO.setRoleName(nameRole);
+
+            userDTOs.add(userDTO);
+        }
+
+        ListUserResponse response = new ListUserResponse();
+        response.setTotalPage(data.getTotalPages());
+        response.setCurrentPage(data.getNumber() + 1);
+        response.setUsers(userDTOs);
+
+        return response;
+    }
 }

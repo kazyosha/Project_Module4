@@ -10,9 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -29,17 +33,50 @@ public class UserController {
 
     @GetMapping
     public String listUsers(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                            @RequestParam(value = "size", required = false, defaultValue = "5") int size,
+                            @RequestParam(value = "departmentId", required = false) String departmentIdStr,
+                            @RequestParam Map<String, String> params,
                             Model model) {
+        int size = 5;
         if (page < 1) page = 1;
         int zeroBasedPage = page - 1;
 
-        ListUserResponse listUserResponse = userService.getAllUsers(zeroBasedPage, size);
-        List<UserDTO> users = listUserResponse.getUsers();
-        // Logic to list users
+        List<DepartmentDTO> departments = departmentService.getAllDepartments();
+        model.addAttribute("departments", departments);
+
+        ListUserResponse listUserResponse;
+        Long departmentId = null;
+        if (departmentIdStr != null && !departmentIdStr.isBlank()) {
+            try {
+                departmentId = Long.parseLong(departmentIdStr);
+            } catch (NumberFormatException e) {
+                departmentId = null; // bỏ qua nếu không phải số
+            }
+        }
+
+        if (departmentId != null) {
+            listUserResponse = userService.getUsersByDepartment(departmentId, zeroBasedPage, size);
+            model.addAttribute("selectedDepartmentId", departmentId);
+        } else {
+            listUserResponse = userService.getAllUsers(zeroBasedPage, size);
+            model.addAttribute("selectedDepartmentId", null);
+        }
+
+        params.remove("page");
+        String queryString = params.entrySet().stream()
+                .filter(e -> e.getValue() != null && !e.getValue().isBlank())
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .collect(Collectors.joining("&"));
+
+        String baseUrl = "/admin";
+        if (departmentId != null) {
+            baseUrl += "?departmentId=" + departmentId;
+        }
+        model.addAttribute("baseUrl", baseUrl);
+        model.addAttribute("queryParams", queryString);
         model.addAttribute("totalPages", listUserResponse.getTotalPage());
         model.addAttribute("currentPage", page);
-        model.addAttribute("users", users);
+        model.addAttribute("users", listUserResponse.getUsers());
+
         return "admin/list-user";
     }
 
@@ -74,7 +111,7 @@ public class UserController {
 
     @PostMapping("/user/create")
     public String storeUser(@Valid @ModelAttribute("user") CreateUserDTO createUserDTO,
-                                    BindingResult result, Model model) throws IOException {
+                            BindingResult result, Model model) throws IOException {
         if (result.hasErrors()) {
             model.addAttribute("departments", departmentService.getAllDepartments());
             return "admin/create-user";
