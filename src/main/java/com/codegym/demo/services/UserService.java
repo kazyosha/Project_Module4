@@ -202,4 +202,55 @@ public class UserService {
 
         return response;
     }
+
+    public ListUserResponse searchUsersByName(String keyword, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
+        Page<User> data = userRepository.findByNameContainingIgnoreCase(keyword, pageable);
+
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : data.getContent()) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId().intValue());
+            userDTO.setUsername(user.getName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setPhone(user.getPhone());
+            userDTO.setImageUrl(user.getImageUrl());
+            userDTO.setDepartmentName(user.getDepartment() != null ? user.getDepartment().getName() : "No Department");
+            userDTO.setRoleName(user.getRole() != null ? user.getRole().getName() : "No Role");
+            userDTOs.add(userDTO);
+        }
+
+        ListUserResponse response = new ListUserResponse();
+        response.setTotalPage(data.getTotalPages());
+        response.setCurrentPage(data.getNumber() + 1);
+        response.setUsers(userDTOs);
+
+        return response;
+    }
+
+    public ListUserResponse searchUsersByNameAndDepartment(String keyword, Long departmentId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
+        Page<User> data = userRepository.findByNameContainingIgnoreCaseAndDepartmentId(keyword, departmentId, pageable);
+
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : data.getContent()) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId().intValue());
+            userDTO.setUsername(user.getName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setPhone(user.getPhone());
+            userDTO.setImageUrl(user.getImageUrl());
+            userDTO.setDepartmentName(user.getDepartment() != null ? user.getDepartment().getName() : "No Department");
+            userDTO.setRoleName(user.getRole() != null ? user.getRole().getName() : "No Role");
+            userDTOs.add(userDTO);
+        }
+
+        ListUserResponse response = new ListUserResponse();
+        response.setTotalPage(data.getTotalPages());
+        response.setCurrentPage(data.getNumber() + 1);
+        response.setUsers(userDTOs);
+
+        return response;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.codegym.demo.dto;
 
-import com.codegym.demo.dto.valid.UniquePhone;
+import com.codegym.demo.dto.valid.customImage.ValidImage;
+import com.codegym.demo.dto.valid.unique.UniqueValue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -16,14 +17,15 @@ public class EditUserDTO {
 
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không hợp lệ")
+    @UniqueValue(field = "email", message = "Email đã tồn tại")
     private String email;
 
-    @UniquePhone
+    @UniqueValue(field = "phone", message = "Số điện thoại đã tồn tại")
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
-
     private String phone;
 
+    @ValidImage
     private MultipartFile image;
     private Long departmentId;
     private Long roleId;

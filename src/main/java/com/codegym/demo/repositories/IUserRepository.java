@@ -15,5 +15,8 @@ public interface IUserRepository extends PagingAndSortingRepository<User , Long>
     void delete(User user);
     void save(User user);
     boolean existsByPhone(String phone);
+    boolean existsByEmail(String email);
     Page<User> findByDepartmentId(Long departmentId, Pageable pageable);
+    Page<User> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<User> findByNameContainingIgnoreCaseAndDepartmentId(String name, Long departmentId, Pageable pageable);
 }

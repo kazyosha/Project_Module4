@@ -10,12 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -32,52 +30,76 @@ public class UserController {
     }
 
     @GetMapping
-    public String listUsers(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                            @RequestParam(value = "departmentId", required = false) String departmentIdStr,
-                            @RequestParam Map<String, String> params,
-                            Model model) {
+    public String listUsers(
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "departmentId", required = false) String departmentIdStr,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam Map<String, String> params,
+            Model model) {
+
         int size = 5;
-        if (page < 1) page = 1;
+        page = Math.max(page, 1);
         int zeroBasedPage = page - 1;
 
         List<DepartmentDTO> departments = departmentService.getAllDepartments();
         model.addAttribute("departments", departments);
 
-        ListUserResponse listUserResponse;
-        Long departmentId = null;
-        if (departmentIdStr != null && !departmentIdStr.isBlank()) {
-            try {
-                departmentId = Long.parseLong(departmentIdStr);
-            } catch (NumberFormatException e) {
-                departmentId = null; // bỏ qua nếu không phải số
-            }
-        }
+        Long departmentId = parseDepartmentId(departmentIdStr);
 
-        if (departmentId != null) {
-            listUserResponse = userService.getUsersByDepartment(departmentId, zeroBasedPage, size);
-            model.addAttribute("selectedDepartmentId", departmentId);
-        } else {
-            listUserResponse = userService.getAllUsers(zeroBasedPage, size);
-            model.addAttribute("selectedDepartmentId", null);
-        }
+        ListUserResponse listUserResponse = fetchUsersByFilter(keyword, departmentId, zeroBasedPage, size);
 
         params.remove("page");
-        String queryString = params.entrySet().stream()
-                .filter(e -> e.getValue() != null && !e.getValue().isBlank())
-                .map(e -> e.getKey() + "=" + e.getValue())
-                .collect(Collectors.joining("&"));
+        String queryString = buildQueryString(params);
 
-        String baseUrl = "/admin";
-        if (departmentId != null) {
-            baseUrl += "?departmentId=" + departmentId;
-        }
+        String baseUrl = buildBaseUrl(departmentId);
+
         model.addAttribute("baseUrl", baseUrl);
         model.addAttribute("queryParams", queryString);
         model.addAttribute("totalPages", listUserResponse.getTotalPage());
         model.addAttribute("currentPage", page);
         model.addAttribute("users", listUserResponse.getUsers());
+        model.addAttribute("selectedDepartmentId", departmentId);
+        model.addAttribute("keyword", keyword);
 
         return "admin/list-user";
+    }
+
+    private Long parseDepartmentId(String departmentIdStr) {
+        if (departmentIdStr != null && !departmentIdStr.isBlank()) {
+            try {
+                return Long.parseLong(departmentIdStr);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private ListUserResponse fetchUsersByFilter(String keyword, Long departmentId, int page, int size) {
+        if (keyword != null && !keyword.isBlank() && departmentId != null) {
+            return userService.searchUsersByNameAndDepartment(keyword, departmentId, page, size);
+        } else if (keyword != null && !keyword.isBlank()) {
+            return userService.searchUsersByName(keyword, page, size);
+        } else if (departmentId != null) {
+            return userService.getUsersByDepartment(departmentId, page, size);
+        } else {
+            return userService.getAllUsers(page, size);
+        }
+    }
+
+    private String buildQueryString(Map<String, String> params) {
+        return params.entrySet().stream()
+                .filter(e -> e.getValue() != null && !e.getValue().isBlank())
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .collect(Collectors.joining("&"));
+    }
+
+    private String buildBaseUrl(Long departmentId) {
+        String baseUrl = "/admin";
+        if (departmentId != null) {
+            baseUrl += "?departmentId=" + departmentId;
+        }
+        return baseUrl;
     }
 
     @GetMapping("/user/create")
