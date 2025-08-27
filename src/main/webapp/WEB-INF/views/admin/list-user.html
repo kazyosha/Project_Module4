@@ -93,7 +93,7 @@
                     <!-- Nút Previous -->
                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{${baseUrl}(page=${currentPage - 1}, ${queryParams})}"
+                           th:href="@{${baseUrl}(page=${currentPage - 1})}"
                            aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
@@ -104,14 +104,14 @@
                         th:each="i : ${#numbers.sequence(1, totalPages)}"
                         th:classappend="${i == currentPage} ? 'active'">
                         <a class="page-link"
-                           th:href="@{${baseUrl}(page=${i}, ${queryParams})}"
+                           th:href="@{${baseUrl}(page=${i})}"
                            th:text="${i}"></a>
                     </li>
 
                     <!-- Nút Next -->
                     <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{${baseUrl}(page=${currentPage + 1}, ${queryParams})}"
+                           th:href="@{${baseUrl}(page=${currentPage + 1})}"
                            aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
