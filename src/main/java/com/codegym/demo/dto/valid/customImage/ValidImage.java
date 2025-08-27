@@ -10,6 +10,9 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidImage {
+
+    String message() default "File ảnh không hợp lệ";
+
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};

@@ -4,6 +4,7 @@ import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
@@ -16,6 +17,7 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 @EnableWebMvc
 @Configuration
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @ComponentScan(basePackages = "com.codegym.demo")
 public class WebConfig implements WebMvcConfigurer {
 
