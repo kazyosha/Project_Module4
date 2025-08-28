@@ -26,13 +26,25 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(HttpServletRequest request, Model model) {
+        String rememberedEmail = null;
+        if (request.getCookies() != null) {
+            for (Cookie c : request.getCookies()) {
+                if ("rememberEmail".equals(c.getName())) {
+                    rememberedEmail = c.getValue();
+                }
+            }
+        }
+        model.addAttribute("rememberedEmail", rememberedEmail);
         return "auth/login";
     }
+
     @PostMapping("/login")
     public String processLogin(
             @RequestParam("email") String email,
             @RequestParam("password") String password,
+            @RequestParam(value = "rememberMe", required = false) String rememberMe,
+            HttpServletResponse response,
             HttpSession session,
             Model model) {
 
@@ -40,8 +52,21 @@ public class AuthController {
         System.out.println(user);
 
         if (user.isPresent()) {
-            User loggedInUser = user.get();   // ✅ gán ra biến
+            User loggedInUser = user.get();
             session.setAttribute("currentUser", loggedInUser);
+
+            if ("on".equals(rememberMe)) {
+                Cookie cookie = new Cookie("rememberEmail", loggedInUser.getEmail());
+                cookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
+                cookie.setPath("/");
+                response.addCookie(cookie);
+            } else {
+                Cookie cookie = new Cookie("rememberEmail", null);
+                cookie.setMaxAge(0);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+            }
+
             String roleName = loggedInUser.getRole().getName();
             if ("ADMIN".equalsIgnoreCase(roleName)) {
                 return "redirect:/admin";
@@ -53,6 +78,7 @@ public class AuthController {
             return "auth/login";
         }
     }
+
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); // xóa session

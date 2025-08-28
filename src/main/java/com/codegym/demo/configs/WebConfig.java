@@ -52,7 +52,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/static/**")
+        registry.addResourceHandler("/resources/**")
                 .addResourceLocations("/WEB-INF/resources/");
 
         registry.addResourceHandler("/uploads/**")
