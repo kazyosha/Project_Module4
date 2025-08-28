@@ -1,12 +1,19 @@
 package com.codegym.demo.controllers;
 
+import com.codegym.demo.models.User;
 import com.codegym.demo.services.AuthService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/auth")
@@ -18,24 +25,37 @@ public class AuthController {
         this.authService = authService;
     }
 
-
     @GetMapping("/login")
-    public String showFormLogin(@RequestParam(name = "error", required = false) String error,
-                                Model model) {
-        if (error != null){
-            model.addAttribute("errorMessage", "Invalid username or password. Please try again.");
-        }
-        // Return the name of the view for the login page
-        return "auth/login"; // This will resolve to /WEB-INF/views/login.html
+    public String showLoginForm() {
+        return "auth/login";
     }
-
     @PostMapping("/login")
-    public String submitLogin(@RequestParam("username") String username,
-                              @RequestParam("password") String password) {
-        if (!authService.checkAccount(username, password)) {
-            return "redirect:/auth/login?error=true";
-        }
-        return "redirect:/home";
+    public String processLogin(
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            HttpSession session,
+            Model model) {
 
+        Optional<User> user = authService.login(email, password);
+        System.out.println(user);
+
+        if (user.isPresent()) {
+            User loggedInUser = user.get();   // ✅ gán ra biến
+            session.setAttribute("currentUser", loggedInUser);
+            String roleName = loggedInUser.getRole().getName();
+            if ("ADMIN".equalsIgnoreCase(roleName)) {
+                return "redirect:/admin";
+            } else {
+                return "redirect:/home";
+            }
+        } else {
+            model.addAttribute("error", "Sai email hoặc password!");
+            return "auth/login";
+        }
+    }
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); // xóa session
+        return "redirect:/auth/login";
     }
 }

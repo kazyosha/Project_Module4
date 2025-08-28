@@ -1,10 +1,12 @@
 package com.codegym.demo.controllers;
 
 import com.codegym.demo.dto.*;
+import com.codegym.demo.models.User;
 import com.codegym.demo.repositories.response.ListUserResponse;
 import com.codegym.demo.services.DepartmentService;
 import com.codegym.demo.services.RoleService;
 import com.codegym.demo.services.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,8 +37,18 @@ public class UserController {
             @RequestParam(value = "departmentId", required = false) String departmentIdStr,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam Map<String, String> params,
+            HttpSession session,
             Model model) {
 
+        User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            return "redirect:/auth/login";
+        }
+
+        if (!"ADMIN".equalsIgnoreCase(currentUser.getRole().getName())) {
+            return "redirect:/home";
+        }
+        model.addAttribute("user", currentUser);
         int size = 5;
         page = Math.max(page, 1);
         int zeroBasedPage = page - 1;
