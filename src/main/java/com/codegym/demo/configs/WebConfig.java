@@ -36,6 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setPrefix("/WEB-INF/views/");
         templateResolver.setSuffix(".html");
+        templateResolver.setCharacterEncoding("UTF-8");
         templateResolver.setTemplateMode("HTML5");
         return templateResolver;
     }
@@ -53,7 +54,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**")
-                .addResourceLocations("/WEB-INF/resources/");
+                .addResourceLocations("/resources/");
 
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:/F:/uploads/");

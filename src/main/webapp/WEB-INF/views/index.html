@@ -1,60 +1,177 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi">
 <head>
-    <title>Title</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa hàng đồ chơi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        /* Header */
+        .navbar {
+            background: transparent;
+        }
+        .navbar-nav .nav-link {
+            color: black;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .navbar-nav .nav-link:hover {
+            color: blue;
+        }
+        .btn-login {
+            color: blue;
+            border: none;
+            background: transparent;
+            margin-left: 10px;
+        }
+        .carousel-item img {
+            width: 100%;
+            height: 500px;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Product cards */
+        .product-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        /* Footer */
+        footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+<!-- HEADER -->
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">ToyStore</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            User management
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/admin">Show list</a></li>
-                            <li><a class="dropdown-item" href="/admin/user/create">Add new</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Department management
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="">Show list</a></li>
-                            <li><a class="dropdown-item" href="">Add new</a></li>
-                        </ul>
-                    </li>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Giảm giá</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Liên hệ</a></li>
                 </ul>
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item me-3 d-flex align-items-center">
-                        <p class="text-light fw-semibold mb-0">
-                            <span th:text="'Welcome, ' + ${currentUser.name} + ' (' + ${currentUser.role.name} + ')'"></span>
-                        </p>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/auth/logout}" class="btn btn-outline-light btn-sm">Logout</a>
-                    </li>
-                </ul>
+            </div>
+            <div class="d-flex align-items-center">
+                <!-- Search -->
+                <form class="d-flex me-3">
+                    <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm sản phẩm..." aria-label="Search">
+                    <button class="btn btn-outline-primary btn-sm" type="submit">Search</button>
+                </form>
+                <!-- Login/Logout -->
+                <button class="btn-login">Login</button>
+                <button class="btn-login">Logout</button>
             </div>
         </div>
     </nav>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK" crossorigin="anonymous"></script>
+    <!-- Banner -->
+    <div id="carouselBanner" class="carousel slide mt-5" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="/resources/image/banner1.jpg" class="d-block w-100" alt="Banner 1">
+            </div>
+            <div class="carousel-item">
+                <img src="/resources/image/banner1.jpg" class="d-block w-100" alt="Banner 2">
+            </div>
+            <div class="carousel-item">
+                <img src="/resources/image/banner1.jpg" class="d-block w-100" alt="Banner 3">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselBanner" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselBanner" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</header>
+
+<!-- BODY -->
+<main class="container mt-5 pt-4">
+
+    <!-- Danh mục -->
+    <h2 class="text-center my-4">Danh mục sản phẩm</h2>
+    <div class="d-flex justify-content-center gap-3 flex-wrap mb-5">
+        <a href="products?categoryId=1" class="btn btn-outline-dark">Quần áo</a>
+        <a href="products?categoryId=2" class="btn btn-outline-dark">Giày và dép</a>
+        <a href="products?categoryId=3" class="btn btn-outline-dark">Trang sức</a>
+        <a href="products?categoryId=4" class="btn btn-outline-dark">Phụ kiện da</a>
+    </div>
+
+    <!-- Sản phẩm mới -->
+    <h2 class="text-center my-4">Sản phẩm mới</h2>
+    <div class="row g-4">
+        <!-- sản phẩm từ DB -->
+        <div class="col-md-3">
+            <div class="product-card">
+                <img src="toy1.png" class="img-fluid mb-2" alt="Sản phẩm">
+                <h5>Tên sản phẩm</h5>
+                <p>Giá: 000.000đ</p>
+                <button class="btn btn-primary btn-sm">Mua ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sản phẩm giảm giá -->
+    <h2 class="text-center my-4">Sản phẩm giảm giá</h2>
+    <div class="row g-4">
+        <!-- sản phẩm từ DB -->
+        <div class="col-md-3">
+            <div class="product-card">
+                <img src="toy2.png" class="img-fluid mb-2" alt="Sản phẩm giảm giá">
+                <h5>Tên sản phẩm</h5>
+                <p><del>000.000đ</del> <span class="text-danger">000.000đ</span></p>
+                <button class="btn btn-danger btn-sm">Mua ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sản phẩm nổi bật -->
+    <h2 class="text-center my-4">Sản phẩm nổi bật</h2>
+    <div class="row g-4">
+        <!-- sản phẩm từ DB -->
+        <div class="col-md-3">
+            <div class="product-card">
+                <img src="toy3.png" class="img-fluid mb-2" alt="Sản phẩm nổi bật">
+                <h5>Tên sản phẩm</h5>
+                <p>Giá: 000.000đ</p>
+                <button class="btn btn-warning btn-sm">Mua ngay</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<!-- FOOTER -->
+<footer>
+    <p>&copy; 2025 ToyStore. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
