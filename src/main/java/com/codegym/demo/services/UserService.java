@@ -7,7 +7,7 @@ import com.codegym.demo.models.Department;
 import com.codegym.demo.models.Role;
 import com.codegym.demo.models.User;
 import com.codegym.demo.repositories.IDepartmentRepository;
-import com.codegym.demo.repositories.IRole;
+import com.codegym.demo.repositories.IRoleRepository;
 import com.codegym.demo.repositories.IUserRepository;
 import com.codegym.demo.repositories.response.ListUserResponse;
 import com.codegym.demo.untils.FileManager;
@@ -29,9 +29,9 @@ public class UserService {
     private final IUserRepository userRepository;
     private final IDepartmentRepository departmentRepository;
     private final FileManager fileManager;
-    private final IRole roleRepository;
+    private final IRoleRepository roleRepository;
 
-    public UserService(IUserRepository userRepository, IDepartmentRepository departmentRepository, FileManager fileManager, IRole roleRepository) {
+    public UserService(IUserRepository userRepository, IDepartmentRepository departmentRepository, FileManager fileManager, IRoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.departmentRepository = departmentRepository;
         this.fileManager = fileManager;

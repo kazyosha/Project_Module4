@@ -1,15 +1,15 @@
 package com.codegym.demo.services;
 
 import com.codegym.demo.models.User;
-import com.codegym.demo.repositories.IAuthService;
+import com.codegym.demo.repositories.IAuthRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 public class AuthService {
-    private IAuthService authService;
-    public AuthService(IAuthService authService) {
+    private IAuthRepository authService;
+    public AuthService(IAuthRepository authService) {
         this.authService = authService;
     }
 

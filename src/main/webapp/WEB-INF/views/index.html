@@ -126,12 +126,11 @@
     <!-- Sản phẩm mới -->
     <h2 class="text-center my-4">Sản phẩm mới</h2>
     <div class="row g-4">
-        <!-- sản phẩm từ DB -->
-        <div class="col-md-3">
+        <div class="col-md-3" th:each="product : ${newProducts}">
             <div class="product-card">
-                <img src="toy1.png" class="img-fluid mb-2" alt="Sản phẩm">
-                <h5>Tên sản phẩm</h5>
-                <p>Giá: 000.000đ</p>
+                <img th:src="${product.imageUrl}" class="img-fluid mb-2" alt="Sản phẩm">
+                <h5 th:text="${product.name}">Tên sản phẩm</h5>
+                <p>Giá: <span th:text="${product.price}">000.000</span> đ</p>
                 <button class="btn btn-primary btn-sm">Mua ngay</button>
             </div>
         </div>
@@ -140,12 +139,14 @@
     <!-- Sản phẩm giảm giá -->
     <h2 class="text-center my-4">Sản phẩm giảm giá</h2>
     <div class="row g-4">
-        <!-- sản phẩm từ DB -->
-        <div class="col-md-3">
+        <div class="col-md-3" th:each="product : ${saleProducts}">
             <div class="product-card">
-                <img src="toy2.png" class="img-fluid mb-2" alt="Sản phẩm giảm giá">
-                <h5>Tên sản phẩm</h5>
-                <p><del>000.000đ</del> <span class="text-danger">000.000đ</span></p>
+                <img th:src="${product.imageUrl}" class="img-fluid mb-2" alt="Sản phẩm giảm giá">
+                <h5 th:text="${product.name}">Tên sản phẩm</h5>
+                <p>
+                    <del th:text="${product.price}">000.000</del>
+                    <span class="text-danger" th:text="${product.discountPrice}">000.000</span> đ
+                </p>
                 <button class="btn btn-danger btn-sm">Mua ngay</button>
             </div>
         </div>
@@ -154,12 +155,11 @@
     <!-- Sản phẩm nổi bật -->
     <h2 class="text-center my-4">Sản phẩm nổi bật</h2>
     <div class="row g-4">
-        <!-- sản phẩm từ DB -->
-        <div class="col-md-3">
+        <div class="col-md-3" th:each="product : ${featuredProducts}">
             <div class="product-card">
-                <img src="toy3.png" class="img-fluid mb-2" alt="Sản phẩm nổi bật">
-                <h5>Tên sản phẩm</h5>
-                <p>Giá: 000.000đ</p>
+                <img th:src="${product.imageUrl}" class="img-fluid mb-2" alt="Sản phẩm nổi bật">
+                <h5 th:text="${product.name}">Tên sản phẩm</h5>
+                <p>Giá: <span th:text="${product.price}">000.000</span> đ</p>
                 <button class="btn btn-warning btn-sm">Mua ngay</button>
             </div>
         </div>
