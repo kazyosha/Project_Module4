@@ -10,7 +10,7 @@
     <h2 class="mb-4">Thêm sản phẩm mới</h2>
 
     <!-- Form thêm sản phẩm -->
-    <form th:action="@{/admin/products/add}" method="post" enctype="multipart/form-data" th:object="${products}">
+    <form th:action="@{/admin/products/create}" method="post" enctype="multipart/form-data" th:object="${products}">
         <div class="mb-3">
             <label class="form-label">Tên sản phẩm</label>
             <input type="text" class="form-control" th:field="*{name}" required>

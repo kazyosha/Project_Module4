@@ -128,7 +128,7 @@
     <div class="row g-4">
         <div class="col-md-3" th:each="product : ${newProducts}">
             <div class="product-card">
-                <img th:src="${product.imageUrl}" class="img-fluid mb-2" alt="Sản phẩm">
+                <img th:src="@{/uploads/{img}(img=${product.imageUrl})}" class="img-fluid mb-2" alt="Sản phẩm">
                 <h5 th:text="${product.name}">Tên sản phẩm</h5>
                 <p>Giá: <span th:text="${product.price}">000.000</span> đ</p>
                 <button class="btn btn-primary btn-sm">Mua ngay</button>
@@ -141,7 +141,7 @@
     <div class="row g-4">
         <div class="col-md-3" th:each="product : ${saleProducts}">
             <div class="product-card">
-                <img th:src="${product.imageUrl}" class="img-fluid mb-2" alt="Sản phẩm giảm giá">
+                <img th:src="@{/uploads/{img}(img=${product.imageUrl})}" class="img-fluid mb-2" alt="Sản phẩm giảm giá">
                 <h5 th:text="${product.name}">Tên sản phẩm</h5>
                 <p>
                     <del th:text="${product.price}">000.000</del>
@@ -157,7 +157,7 @@
     <div class="row g-4">
         <div class="col-md-3" th:each="product : ${featuredProducts}">
             <div class="product-card">
-                <img th:src="${product.imageUrl}" class="img-fluid mb-2" alt="Sản phẩm nổi bật">
+                <img th:src="@{/uploads/{img}(img=${product.imageUrl})}" class="img-fluid mb-2" alt="Sản phẩm nổi bật">
                 <h5 th:text="${product.name}">Tên sản phẩm</h5>
                 <p>Giá: <span th:text="${product.price}">000.000</span> đ</p>
                 <button class="btn btn-warning btn-sm">Mua ngay</button>

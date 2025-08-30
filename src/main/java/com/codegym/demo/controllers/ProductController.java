@@ -23,7 +23,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/products/add")
+    @GetMapping("/products/create")
     public String showFormAddProduct(Model model) {
         AddProductDTO products = new AddProductDTO();
         List<Category> categories = productService.getAllCategories();
@@ -34,7 +34,7 @@ public class ProductController {
         model.addAttribute("products", products);
         return "admin/add-product";
     }
-    @PostMapping("/products/add")
+    @PostMapping("/products/create")
     public String addProduct(@ModelAttribute("products") AddProductDTO products) {
         productService.saveProduct(products);
         return "redirect:/admin/products/add";
