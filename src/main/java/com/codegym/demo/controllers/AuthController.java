@@ -81,7 +81,7 @@ public class AuthController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate(); // xóa session
+        session.invalidate();
         return "redirect:/auth/login";
     }
 }

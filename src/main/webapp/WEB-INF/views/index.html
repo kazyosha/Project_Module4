@@ -64,7 +64,7 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">ToyStore</a>
+            <a class="navbar-brand fw-bold" href="/home">ToyStore</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -82,11 +82,16 @@
                     <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm sản phẩm..." aria-label="Search">
                     <button class="btn btn-outline-primary btn-sm" type="submit">Search</button>
                 </form>
-                <!-- Login/Logout -->
-                <button class="btn-login">Login</button>
-                <button class="btn-login">Logout</button>
+
+                <div th:if="${session.currentUser.getName() != null}">
+                    <span>Welcome, <strong th:text="${session.currentUser.getName()}">User</strong></span>
+                    <a class="btn btn-outline-danger btn-sm ms-2" th:href="@{/auth/logout}">Logout</a>
+                </div>
+                <div th:unless="${session.currentUser.getName() != null}">
+                    <a class="btn btn-outline-primary btn-sm me-2" th:href="@{/auth/login}">Login</a>
+                    <a class="btn btn-outline-secondary btn-sm" th:href="@{/auth/register}">Register</a>
+                </div>
             </div>
-        </div>
     </nav>
 
     <!-- Banner -->

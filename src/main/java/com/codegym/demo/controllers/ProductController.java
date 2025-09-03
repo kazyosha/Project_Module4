@@ -6,8 +6,10 @@ import com.codegym.demo.dto.product.UpdateProductDTO;
 import com.codegym.demo.models.Category;
 import com.codegym.demo.models.ProductTag;
 import com.codegym.demo.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,7 +44,13 @@ public class ProductController {
     }
 
     @PostMapping("/products/create")
-    public String addProduct(@ModelAttribute("products") GetAllProduct products) {
+    public String addProduct(@Valid @ModelAttribute("products") GetAllProduct products,
+                             BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("categories", productService.getAllCategories());
+            model.addAttribute("tags", productService.getAllTags());
+            return "admin/add-product";
+        }
         productService.saveProduct(products);
         return "redirect:/admin/products";
     }
@@ -57,8 +65,16 @@ public class ProductController {
     }
 
     @PostMapping("/products/{id}/edit")
-    public String updateProduct(@PathVariable("id") long id,
-                                @ModelAttribute("product") UpdateProductDTO productDto) {
+    public String updateProduct(@Valid @PathVariable("id") long id,
+                                @ModelAttribute("product") UpdateProductDTO productDto,
+                                BindingResult result, Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("categories", productService.getAllCategories());
+            model.addAttribute("tags", productService.getAllTags());
+            return "admin/edit-product";
+        }
+
         productDto.setId(id);
         productService.updateProduct(productDto);
         return "redirect:/admin/products";

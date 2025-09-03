@@ -1,5 +1,6 @@
 package com.codegym.demo.dto.product;
 
+import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -9,16 +10,24 @@ public class GetAllProduct {
 
     private long id;
 
+    @NotBlank(message = "Tên sản phẩm không được để trống")
+    @Size(max = 255, message = "Tên sản phẩm tối đa 255 ký tự")
     private String name;
 
+    @Size(max = 1000, message = "Mô tả tối đa 1000 ký tự")
     private String description;
 
-    private MultipartFile image; // upload ảnh
+    private MultipartFile image;
 
-    private BigDecimal price;
+    @NotBlank(message = "Giá không được để trống")
+    @Pattern(regexp = "^\\d+[\\d,.]*$", message = "Giá không hợp lệ")
+    private String price;
 
-    private BigDecimal discountPrice;
+    @Pattern(regexp = "^\\d+[\\d,.]*$", message = "Giá khuyến mãi không hợp lệ")
+    private String discountPrice;
 
+    @NotNull(message = "Số lượng tồn không được để trống")
+    @Min(value = 0, message = "Số lượng tồn phải >= 0")
     private Integer stock;
 
     private List<Long> categoryIds;
@@ -26,7 +35,7 @@ public class GetAllProduct {
 
     public GetAllProduct() {
     }
-    public GetAllProduct(String name, String description, MultipartFile image, BigDecimal price, BigDecimal discountPrice, Integer stock) {
+    public GetAllProduct(String name, String description, MultipartFile image, String price, String discountPrice, Integer stock) {
         this.name = name;
         this.description = description;
         this.image = image;
@@ -59,19 +68,19 @@ public class GetAllProduct {
         this.image = image;
     }
 
-    public BigDecimal getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public BigDecimal getDiscountPrice() {
+    public String getDiscountPrice() {
         return discountPrice;
     }
 
-    public void setDiscountPrice(BigDecimal discountPrice) {
+    public void setDiscountPrice(String discountPrice) {
         this.discountPrice = discountPrice;
     }
 

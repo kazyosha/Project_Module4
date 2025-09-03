@@ -87,8 +87,11 @@ public class ProductService {
     public void saveProduct(GetAllProduct product) {
         String name = product.getName();
         String description = product.getDescription();
-        BigDecimal price = product.getPrice();
-        BigDecimal discountPrice = product.getDiscountPrice();
+        BigDecimal price = new BigDecimal(product.getPrice().replaceAll("[^\\d]", ""));
+        BigDecimal discountPrice = null;
+        if (product.getDiscountPrice() != null && !product.getDiscountPrice().isEmpty()) {
+            discountPrice = new BigDecimal(product.getDiscountPrice().replaceAll("[^\\d]", ""));
+        }
         Integer stock = product.getStock();
 
         Product productNew = new Product();
@@ -140,7 +143,6 @@ public class ProductService {
         dto.setDiscountPrice(product.getDiscountPrice());
         dto.setStock(product.getStock());
 
-        // map categories -> id list (check null)
         if (product.getCategories() != null) {
             dto.setCategoryIds(
                     product.getCategories().stream()
@@ -148,10 +150,9 @@ public class ProductService {
                             .toList()
             );
         } else {
-            dto.setCategoryIds(List.of()); // trả về list rỗng
+            dto.setCategoryIds(List.of());
         }
 
-        // map tags -> id list (check null)
         if (product.getTags() != null) {
             dto.setTagIds(
                     product.getTags().stream()

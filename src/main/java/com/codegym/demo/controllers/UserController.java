@@ -53,6 +53,7 @@ public class UserController {
             return "redirect:/home";
         }
         model.addAttribute("user", currentUser);
+
         int size = 5;
         page = Math.max(page, 1);
         int zeroBasedPage = page - 1;
