@@ -1,6 +1,6 @@
 package com.codegym.demo.repositories.response;
 
-import com.codegym.demo.dto.UserDTO;
+import com.codegym.demo.dto.user.UserDTO;
 
 import java.util.List;
 

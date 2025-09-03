@@ -1,6 +1,6 @@
 package com.codegym.demo.services;
 
-import com.codegym.demo.dto.DepartmentDTO;
+import com.codegym.demo.dto.department.DepartmentDTO;
 import com.codegym.demo.models.Department;
 import com.codegym.demo.repositories.IDepartmentRepository;
 import org.springframework.stereotype.Service;

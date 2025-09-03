@@ -1,6 +1,6 @@
 package com.codegym.demo.services;
 
-import com.codegym.demo.dto.RoleDTO;
+import com.codegym.demo.dto.user.RoleDTO;
 import com.codegym.demo.models.Role;
 import com.codegym.demo.repositories.IRoleRepository;
 import org.springframework.stereotype.Service;

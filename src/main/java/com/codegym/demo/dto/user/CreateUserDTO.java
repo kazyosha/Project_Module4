@@ -1,7 +1,7 @@
-package com.codegym.demo.dto;
+package com.codegym.demo.dto.user;
 
-import com.codegym.demo.dto.valid.customImage.ValidImage;
-import com.codegym.demo.dto.valid.unique.UniqueValue;
+import com.codegym.demo.dto.user.valid.customImage.ValidImage;
+import com.codegym.demo.dto.user.valid.unique.UniqueValue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

@@ -1,4 +1,4 @@
-package com.codegym.demo.dto;
+package com.codegym.demo.dto.user;
 
 public class UserDTO {
     private int id;

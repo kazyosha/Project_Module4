@@ -1,4 +1,4 @@
-package com.codegym.demo.dto.valid.customImage;
+package com.codegym.demo.dto.user.valid.customImage;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

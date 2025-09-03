@@ -1,12 +1,11 @@
-package com.codegym.demo.dto;
+package com.codegym.demo.dto.product;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
-public class AddProductDTO {
+public class GetAllProduct {
 
     private long id;
 
@@ -25,9 +24,9 @@ public class AddProductDTO {
     private List<Long> categoryIds;
     private List<Long> tagIds;
 
-    public AddProductDTO() {
+    public GetAllProduct() {
     }
-    public AddProductDTO(String name, String description, MultipartFile image, BigDecimal price, BigDecimal discountPrice, Integer stock) {
+    public GetAllProduct(String name, String description, MultipartFile image, BigDecimal price, BigDecimal discountPrice, Integer stock) {
         this.name = name;
         this.description = description;
         this.image = image;

@@ -1,6 +1,10 @@
 package com.codegym.demo.controllers;
 
-import com.codegym.demo.dto.*;
+import com.codegym.demo.dto.department.DepartmentDTO;
+import com.codegym.demo.dto.user.CreateUserDTO;
+import com.codegym.demo.dto.user.EditUserDTO;
+import com.codegym.demo.dto.user.RoleDTO;
+import com.codegym.demo.dto.user.UserDTO;
 import com.codegym.demo.models.User;
 import com.codegym.demo.repositories.response.ListUserResponse;
 import com.codegym.demo.services.DepartmentService;

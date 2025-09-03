@@ -1,6 +1,8 @@
 package com.codegym.demo.services;
 
-import com.codegym.demo.dto.AddProductDTO;
+import com.codegym.demo.dto.product.GetAllProduct;
+import com.codegym.demo.dto.product.ProductDTO;
+import com.codegym.demo.dto.product.UpdateProductDTO;
 import com.codegym.demo.models.Category;
 import com.codegym.demo.models.Product;
 import com.codegym.demo.models.ProductTag;
@@ -9,11 +11,14 @@ import com.codegym.demo.repositories.IProductRepository;
 import com.codegym.demo.repositories.IProductTagRepository;
 import com.codegym.demo.untils.FileManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -48,30 +53,27 @@ public class ProductService {
         return productRepository.findByCategoryName(categoryName);
     }
 
-    public List<AddProductDTO> getAllProducts() {
+    @Transactional(readOnly = true)
+    public List<ProductDTO> getAllProducts() {
         List<Product> products = productRepository.findAll();
-        List<AddProductDTO> result = new ArrayList<>();
 
-        for (Product p : products) {
-            AddProductDTO dto = new AddProductDTO();
-            dto.setId(p.getId());
+        return products.stream().map(p -> {
+            ProductDTO dto = new ProductDTO();
+            dto.setId(p.getId().intValue());
             dto.setName(p.getName());
             dto.setDescription(p.getDescription());
             dto.setPrice(p.getPrice());
             dto.setDiscountPrice(p.getDiscountPrice());
             dto.setStock(p.getStock());
-            // Nếu có quan hệ category, tag thì map thêm
-            dto.setCategoryIds(
-                    p.getCategories().stream().map(Category::getId).toList()
-            );
-            dto.setTagIds(
-                    p.getTags().stream().map(ProductTag::getId).toList()
-            );
+            dto.setImageUrl(p.getImageUrl());
 
-            result.add(dto);
-        }
-
-        return result;
+            dto.setCategories(
+                    p.getCategories() == null
+                            ? new ArrayList<>()
+                            : p.getCategories().stream().map(Category::getName).toList()
+            );
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     public List<Category> getAllCategories() {
@@ -82,19 +84,7 @@ public class ProductService {
         return productTagRepository.findAll();
     }
 
-    public Product getProductById(int id) {
-        return productRepository.findById((long) id).orElse(null);
-    }
-
-    public void deleteById(int id) {
-        productRepository.deleteById((long) id);
-    }
-
-    public void updateProduct(int id, Product product) {
-        productRepository.save(product);
-    }
-
-    public void saveProduct(AddProductDTO product) {
+    public void saveProduct(GetAllProduct product) {
         String name = product.getName();
         String description = product.getDescription();
         BigDecimal price = product.getPrice();
@@ -137,4 +127,80 @@ public class ProductService {
         productRepository.save(productNew);
     }
 
+    @Transactional(readOnly = true)
+    public UpdateProductDTO getProductForEdit(long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        UpdateProductDTO dto = new UpdateProductDTO();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        dto.setDiscountPrice(product.getDiscountPrice());
+        dto.setStock(product.getStock());
+
+        // map categories -> id list (check null)
+        if (product.getCategories() != null) {
+            dto.setCategoryIds(
+                    product.getCategories().stream()
+                            .map(Category::getId)
+                            .toList()
+            );
+        } else {
+            dto.setCategoryIds(List.of()); // trả về list rỗng
+        }
+
+        // map tags -> id list (check null)
+        if (product.getTags() != null) {
+            dto.setTagIds(
+                    product.getTags().stream()
+                            .map(ProductTag::getId)
+                            .toList()
+            );
+        } else {
+            dto.setTagIds(List.of());
+        }
+
+        return dto;
+    }
+
+    @Transactional
+    public void updateProduct(UpdateProductDTO dto) {
+        Product product = productRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setDiscountPrice(dto.getDiscountPrice());
+        product.setStock(dto.getStock());
+
+        MultipartFile file = dto.getImage();
+        if (!file.isEmpty()) {
+            fileManager.deleteFile(uploadDir + "/" + product.getImageUrl());
+            String fileName = fileManager.uploadFile(uploadDir, file);
+            product.setImageUrl(fileName);
+        }
+
+        if (dto.getCategoryIds() != null && !dto.getCategoryIds().isEmpty()) {
+            List<Category> categories = categoryRepository.findAllById(dto.getCategoryIds());
+            product.setCategories(new HashSet<>(categories));
+        } else {
+            product.setCategories(new HashSet<>());
+        }
+
+        if (dto.getTagIds() != null && !dto.getTagIds().isEmpty()) {
+            List<ProductTag> tags = productTagRepository.findAllById(dto.getTagIds());
+            product.setTags(new HashSet<>(tags));
+        } else {
+            product.setTags(new HashSet<>());
+        }
+
+        productRepository.save(product);
+    }
+
+    public void deleteProduct(long id) {
+        productRepository.deleteById(id);
+    }
 }

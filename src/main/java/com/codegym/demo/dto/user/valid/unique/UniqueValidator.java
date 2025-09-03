@@ -1,4 +1,4 @@
-package com.codegym.demo.dto.valid.unique;
+package com.codegym.demo.dto.user.valid.unique;
 
 import com.codegym.demo.repositories.IUserRepository;
 import jakarta.validation.ConstraintValidator;

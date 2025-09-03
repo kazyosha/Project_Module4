@@ -1,4 +1,4 @@
-package com.codegym.demo.dto.valid.unique;
+package com.codegym.demo.dto.user.valid.customImage;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -6,15 +6,14 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = UniqueValidator.class) // class xử lý logic
+@Constraint(validatedBy = ImageValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UniqueValue {
-    String message() default "Giá trị đã tồn tại";
+public @interface ValidImage {
+
+    String message() default "File ảnh không hợp lệ";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
-    String field();
 }

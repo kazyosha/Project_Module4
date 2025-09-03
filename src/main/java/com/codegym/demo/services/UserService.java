@@ -1,8 +1,8 @@
 package com.codegym.demo.services;
 
-import com.codegym.demo.dto.CreateUserDTO;
-import com.codegym.demo.dto.EditUserDTO;
-import com.codegym.demo.dto.UserDTO;
+import com.codegym.demo.dto.user.CreateUserDTO;
+import com.codegym.demo.dto.user.EditUserDTO;
+import com.codegym.demo.dto.user.UserDTO;
 import com.codegym.demo.models.Department;
 import com.codegym.demo.models.Role;
 import com.codegym.demo.models.User;

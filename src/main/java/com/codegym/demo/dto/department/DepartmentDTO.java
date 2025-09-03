@@ -1,13 +1,13 @@
-package com.codegym.demo.dto;
+package com.codegym.demo.dto.department;
 
-public class RoleDTO {
+public class DepartmentDTO {
     private Long id;
     private String name;
 
-    public RoleDTO() {
+    public DepartmentDTO() {
     }
 
-    public RoleDTO(Long id, String name) {
+    public DepartmentDTO(Long id, String name) {
         this.id = id;
         this.name = name;
     }

@@ -1,6 +1,6 @@
 package com.codegym.demo.controllers;
 
-import com.codegym.demo.dto.DepartmentDTO;
+import com.codegym.demo.dto.department.DepartmentDTO;
 import com.codegym.demo.services.DepartmentService;
 import com.codegym.demo.services.UserService;
 import org.springframework.stereotype.Controller;
