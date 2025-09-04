@@ -3,19 +3,19 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <title>User List</title>
+    <title th:text="#{user_list}">User List</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
 <section layout:fragment="content">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h3">User List</h1>
-        <a class="btn btn-success" href="/admin/user/create">+ Create User</a>
+        <h1 class="h3" th:text="#{user_list}">User List</h1>
+        <a class="btn btn-success" href="/admin/user/create" th:text="#{create_user}">+ Create User</a>
     </div>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <form th:action="@{/admin}" method="get" class="mb-3 d-flex">
             <select class="form-select me-2" name="departmentId" onchange="this.form.submit()">
-                <option value="" th:selected="${selectedDepartmentId == null}">-- All Departments --</option>
+                <option value="" th:selected="${selectedDepartmentId == null}" th:text="#{all_department}">-- All Departments --</option>
                 <option th:each="dept : ${departments}"
                         th:value="${dept.id}"
                         th:text="${dept.name}"
@@ -24,17 +24,15 @@
             </select>
             <input type="hidden" name="keyword" th:value="${keyword}">
             <noscript>
-                <button type="submit" class="btn btn-primary">Filter</button>
+                <button type="submit" class="btn btn-primary" th:text="#{search}">Search</button>
             </noscript>
         </form>
-    </div>
         <form th:action="@{/admin}" method="get" class="mb-3 d-flex">
             <input type="text" name="keyword" class="form-control me-2"
-                   placeholder="Search by name"
+                   th:placeholder="#{search_by_name}"
                    th:value="${keyword}">
-            <!-- giữ lại departmentId khi search -->
             <input type="hidden" name="departmentId" th:value="${selectedDepartmentId}">
-            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-primary" th:text="#{search}">Search</button>
         </form>
     </div>
     <div class="card shadow-sm">
@@ -42,14 +40,14 @@
             <table class="table table-hover align-middle">
                 <thead class="table-dark">
                 <tr>
-                    <th scope="col">STT</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Image</th>
+                    <th scope="col" th:text="#{stt}">STT</th>
+                    <th scope="col" th:text="#{name}">Name</th>
+                    <th scope="col" th:text="#{image}">Image</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Department</th>
-                    <th scope="col">Role</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col" th:text="#{phone}">Phone</th>
+                    <th scope="col" th:text="#{department}">Department</th>
+                    <th scope="col" th:text="#{role}">Role</th>
+                    <th scope="col" th:text="#{actions}">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -76,7 +74,7 @@
 
                         <!-- Delete -->
                         <a class="btn btn-sm btn-danger"
-                           onclick="return confirm('Are you sure?')"
+                           onclick="return confirm('[[#{confirm_delete}]]')"
                            th:href="@{/admin/user/{id}/delete(id=${user.id})}"
                            title="Delete">
                             <i class="bi bi-trash"></i>
@@ -94,7 +92,7 @@
                         <a class="page-link"
                            th:href="@{${baseUrl}(page=${currentPage - 1})}"
                            aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
+                            <span aria-hidden="true" th:text="#{previous}">&laquo;</span>
                         </a>
                     </li>
 
@@ -112,7 +110,7 @@
                         <a class="page-link"
                            th:href="@{${baseUrl}(page=${currentPage + 1})}"
                            aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
+                            <span aria-hidden="true" th:text="#{next}">&raquo;</span>
                         </a>
                     </li>
                 </ul>

@@ -23,6 +23,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
+import java.time.Duration;
 import java.util.Locale;
 
 @EnableWebMvc
@@ -75,13 +76,6 @@ public class WebConfig implements WebMvcConfigurer {
         return new StandardServletMultipartResolver();
     }
 
-//    @Bean
-//    public RestTemplate restTemplate() {
-//        RestTemplate rt = new RestTemplate();
-//        rt.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-//        return rt;
-//    }
-
     // i18n
     @Bean
     public MessageSource messageSource() {
@@ -95,6 +89,7 @@ public class WebConfig implements WebMvcConfigurer {
     public LocaleResolver localeResolver() {
         CookieLocaleResolver resolver = new CookieLocaleResolver("Locale");
         resolver.setDefaultLocale(Locale.ENGLISH);
+        resolver.setCookieMaxAge(Duration.ofDays(30)); // Cookie sống 30 ngày
         return resolver;
     }
 
