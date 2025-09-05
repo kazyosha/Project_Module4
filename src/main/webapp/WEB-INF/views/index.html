@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cửa hàng đồ chơi</title>
+    <title>Football Store - Cửa hàng bóng đá</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -21,12 +21,6 @@
         }
         .navbar-nav .nav-link:hover {
             color: blue;
-        }
-        .btn-login {
-            color: blue;
-            border: none;
-            background: transparent;
-            margin-left: 10px;
         }
         .carousel-item img {
             width: 100%;
@@ -48,133 +42,215 @@
             transform: translateY(-5px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        /* Footer */
-        footer {
-            background: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-            margin-top: 40px;
-            border-top: 1px solid #ddd;
+        .banner-slide.active {
+            display: block;
+            opacity: 1;
+        }
+        .banner-dot {
+            opacity: 0.5;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 0 4px;
+            border: none;
         }
     </style>
 </head>
-<body>
+<body class="bg-light">
 
-<!-- HEADER -->
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/home">ToyStore</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="#">Trang chủ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Giảm giá</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Liên hệ</a></li>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-md navbar-light bg-white shadow sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <div class="rounded-circle bg-success d-flex justify-content-center align-items-center me-2" style="width:40px; height:40px;">
+                <svg class="w-50 h-50 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+            </div>
+            <span class="fw-bold fs-4">FootballStore</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link active text-success" href="#">Trang chủ</a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Thương hiệu</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Tin tức</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Liên hệ</a></li>
+            </ul>
+            <button id="loginBtn" class="btn btn-success" onclick="toggleLogin()">Đăng nhập</button>
+        </div>
+    </div>
+</nav>
+
+<!-- Search Bar -->
+<div class="bg-white py-4 shadow-sm">
+    <div class="container">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm bóng đá...">
+            <button class="btn btn-success" type="button">Tìm kiếm</button>
+        </div>
+    </div>
+</div>
+
+<!-- Banner Slider -->
+<div class="position-relative overflow-hidden" style="height:400px;">
+    <div class="banner-slide active w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(to right, #1e3c72, #2a5298);">
+        <div class="text-center">
+            <h2 class="display-4 fw-bold">Bộ sưu tập mùa giải mới</h2>
+            <p class="fs-5 mb-3">Áo đấu chính thức các CLB hàng đầu thế giới</p>
+            <button class="btn btn-light btn-lg">Xem ngay</button>
+        </div>
+    </div>
+    <div class="banner-slide w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(to right, #e52d27, #b31217);">
+        <div class="text-center">
+            <h2 class="display-4 fw-bold">Giày bóng đá chuyên nghiệp</h2>
+            <p class="fs-5 mb-3">Từ Nike, Adidas, Puma với công nghệ tiên tiến</p>
+            <button class="btn btn-light btn-lg">Khám phá</button>
+        </div>
+    </div>
+    <div class="banner-slide w-100 h-100 d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(to right, #11998e, #38ef7d);">
+        <div class="text-center">
+            <h2 class="display-4 fw-bold">Phụ kiện bóng đá</h2>
+            <p class="fs-5 mb-3">Găng tay thủ môn, bóng, tất và nhiều hơn nữa</p>
+            <button class="btn btn-light btn-lg">Mua ngay</button>
+        </div>
+    </div>
+    <!-- Banner Dots -->
+    <div class="position-absolute bottom-0 start-50 translate-middle-x mb-3 d-flex">
+        <button class="banner-dot active btn btn-light rounded-circle me-2" onclick="goToSlide(0)"></button>
+        <button class="banner-dot btn btn-light rounded-circle me-2" onclick="goToSlide(1)"></button>
+        <button class="banner-dot btn btn-light rounded-circle" onclick="goToSlide(2)"></button>
+    </div>
+</div>
+
+<!-- Product Categories -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4 fw-bold">Danh mục sản phẩm</h2>
+        <div class="row g-3">
+            <div class="col-6 col-md-3 text-center category-card p-3 bg-light rounded">
+                <div class="bg-primary rounded-circle mx-auto mb-2" style="width:64px;height:64px; display:flex;align-items:center;justify-content:center;">
+                    <svg class="w-50 h-50 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <h5>Áo đấu</h5>
+            </div>
+            <div class="col-6 col-md-3 text-center category-card p-3 bg-light rounded">
+                <div class="bg-danger rounded-circle mx-auto mb-2" style="width:64px;height:64px; display:flex;align-items:center;justify-content:center;">
+                    <svg class="w-50 h-50 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                    </svg>
+                </div>
+                <h5>Giày đá bóng</h5>
+            </div>
+            <div class="col-6 col-md-3 text-center category-card p-3 bg-light rounded">
+                <div class="bg-success rounded-circle mx-auto mb-2" style="width:64px;height:64px; display:flex;align-items:center;justify-content:center;">
+                    <svg class="w-50 h-50 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                </div>
+                <h5>Bóng đá</h5>
+            </div>
+            <div class="col-6 col-md-3 text-center category-card p-3 bg-light rounded">
+                <div class="bg-purple rounded-circle mx-auto mb-2" style="width:64px;height:64px; display:flex;align-items:center;justify-content:center;">
+                    <svg class="w-50 h-50 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <h5>Phụ kiện</h5>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Sản phẩm mới -->
+<h2 class="text-center my-4">Sản phẩm mới</h2>
+<div class="row g-4">
+    <div class="col-md-3" th:each="product : ${newProducts}">
+        <div class="product-card">
+            <img th:src="@{/uploads/{img}(img=${product.imageUrl})}" class="img-fluid mb-2" alt="Sản phẩm">
+            <h5 th:text="${product.name}">Tên sản phẩm</h5>
+            <p>Giá:
+                <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+            </p>
+            <button class="btn btn-primary btn-sm">Mua ngay</button>
+        </div>
+    </div>
+</div>
+
+<!-- Sản phẩm giảm giá -->
+<h2 class="text-center my-4">Sản phẩm giảm giá</h2>
+<div class="row g-4">
+    <div class="col-md-3" th:each="product : ${saleProducts}">
+        <div class="product-card">
+            <img th:src="@{/uploads/{img}(img=${product.imageUrl})}" class="img-fluid mb-2" alt="Sản phẩm giảm giá">
+            <h5 th:text="${product.name}">Tên sản phẩm</h5>
+            <p>
+                <del th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">000.000</del>
+                <span th:text="${product.discountPrice != null ? #numbers.formatDecimal(product.discountPrice, 0, 'COMMA', 0, 'POINT') + ' ₫' : 'No discount'}"></span>
+            </p>
+            <button class="btn btn-danger btn-sm">Mua ngay</button>
+        </div>
+    </div>
+</div>
+
+<!-- Sản phẩm nổi bật -->
+<h2 class="text-center my-4">Sản phẩm nổi bật</h2>
+<div class="row g-4">
+    <div class="col-md-3" th:each="product : ${featuredProducts}">
+        <div class="product-card">
+            <img th:src="@{/uploads/{img}(img=${product.imageUrl})}" class="img-fluid mb-2" alt="Sản phẩm nổi bật">
+            <h5 th:text="${product.name}">Tên sản phẩm</h5>
+            <p>Giá: <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">000.000</span> </p>
+            <button class="btn btn-warning btn-sm">Mua ngay</button>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <h5>FootballStore</h5>
+                <p class="small text-secondary">Cửa hàng bóng đá uy tín với đầy đủ sản phẩm chính hãng từ các thương hiệu hàng đầu thế giới.</p>
+            </div>
+            <div class="col-md-3">
+                <h6>Sản phẩm</h6>
+                <ul class="list-unstyled small text-secondary">
+                    <li><a href="#" class="text-secondary text-decoration-none">Áo đấu</a></li>
+                    <li><a href="#" class="text-secondary text-decoration-none">Giày đá bóng</a></li>
+                    <li><a href="#" class="text-secondary text-decoration-none">Bóng đá</a></li>
+                    <li><a href="#" class="text-secondary text-decoration-none">Phụ kiện</a></li>
                 </ul>
             </div>
-            <div class="d-flex align-items-center">
-                <!-- Search -->
-                <form class="d-flex me-3">
-                    <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm sản phẩm..." aria-label="Search">
-                    <button class="btn btn-outline-primary btn-sm" type="submit">Search</button>
-                </form>
-
-                <div th:if="${user != null}">
-                    <span>Welcome, <strong th:text="${user.name}">User</strong></span>
-                    <a class="btn btn-outline-danger btn-sm ms-2" th:href="@{/auth/logout}">Logout</a>
-                </div>
-                <div th:unless="${user != null}">
-                    <a class="btn btn-outline-primary btn-sm me-2" th:href="@{/auth/login}">Login</a>
-                    <a class="btn btn-outline-secondary btn-sm" th:href="@{/auth/register}">Register</a>
-                </div>
+            <div class="col-md-3">
+                <h6>Hỗ trợ</h6>
+                <ul class="list-unstyled small text-secondary">
+                    <li><a href="#" class="text-secondary text-decoration-none">Chính sách đổi trả</a></li>
+                    <li><a href="#" class="text-secondary text-decoration-none">Hướng dẫn mua hàng</a></li>
+                    <li><a href="#" class="text-secondary text-decoration-none">Liên hệ</a></li>
+                    <li><a href="#" class="text-secondary text-decoration-none">FAQ</a></li>
+                </ul>
             </div>
-    </nav>
-
-    <!-- Banner -->
-    <div id="carouselBanner" class="carousel slide mt-5" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="/resources/image/banner1.jpg" class="d-block w-100" alt="Banner 1">
-            </div>
-            <div class="carousel-item">
-                <img src="/resources/image/banner1.jpg" class="d-block w-100" alt="Banner 2">
-            </div>
-            <div class="carousel-item">
-                <img src="/resources/image/banner1.jpg" class="d-block w-100" alt="Banner 3">
+            <div class="col-md-3">
+                <h6>Liên hệ</h6>
+                <ul class="list-unstyled small text-secondary">
+                    <li>📞 0123 456 789</li>
+                    <li>📧 info@footballstore.vn</li>
+                    <li>📍 123 Đường ABC, Quận 1, TP.HCM</li>
+                </ul>
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselBanner" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselBanner" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
+        <hr class="my-3 border-secondary">
+        <p class="text-center small text-secondary">&copy; 2024 FootballStore. Tất cả quyền được bảo lưu.</p>
     </div>
-</header>
-
-<!-- BODY -->
-<main class="container mt-5 pt-4">
-
-    <!-- Danh mục -->
-    <h2 class="text-center my-4">Danh mục sản phẩm</h2>
-    <div class="d-flex justify-content-center gap-3 flex-wrap mb-5">
-        <a href="products?categoryId=1" class="btn btn-outline-dark">Quần áo</a>
-        <a href="products?categoryId=2" class="btn btn-outline-dark">Giày và dép</a>
-        <a href="products?categoryId=3" class="btn btn-outline-dark">Trang sức</a>
-        <a href="products?categoryId=4" class="btn btn-outline-dark">Phụ kiện da</a>
-    </div>
-
-    <!-- Sản phẩm mới -->
-    <h2 class="text-center my-4">Sản phẩm mới</h2>
-    <div class="row g-4">
-        <div class="col-md-3" th:each="product : ${newProducts}">
-            <div class="product-card">
-                <img th:src="@{/uploads/{img}(img=${product.imageUrl})}" class="img-fluid mb-2" alt="Sản phẩm">
-                <h5 th:text="${product.name}">Tên sản phẩm</h5>
-                <p>Giá: <span th:text="${product.price}">000.000</span> đ</p>
-                <button class="btn btn-primary btn-sm">Mua ngay</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sản phẩm giảm giá -->
-    <h2 class="text-center my-4">Sản phẩm giảm giá</h2>
-    <div class="row g-4">
-        <div class="col-md-3" th:each="product : ${saleProducts}">
-            <div class="product-card">
-                <img th:src="@{/uploads/{img}(img=${product.imageUrl})}" class="img-fluid mb-2" alt="Sản phẩm giảm giá">
-                <h5 th:text="${product.name}">Tên sản phẩm</h5>
-                <p>
-                    <del th:text="${product.price}">000.000</del>
-                    <span class="text-danger" th:text="${product.discountPrice}">000.000</span> đ
-                </p>
-                <button class="btn btn-danger btn-sm">Mua ngay</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sản phẩm nổi bật -->
-    <h2 class="text-center my-4">Sản phẩm nổi bật</h2>
-    <div class="row g-4">
-        <div class="col-md-3" th:each="product : ${featuredProducts}">
-            <div class="product-card">
-                <img th:src="@{/uploads/{img}(img=${product.imageUrl})}" class="img-fluid mb-2" alt="Sản phẩm nổi bật">
-                <h5 th:text="${product.name}">Tên sản phẩm</h5>
-                <p>Giá: <span th:text="${product.price}">000.000</span> đ</p>
-                <button class="btn btn-warning btn-sm">Mua ngay</button>
-            </div>
-        </div>
-    </div>
-</main>
-
-
-<!-- FOOTER -->
-<footer>
-    <p>&copy; 2025 ToyStore. All rights reserved.</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

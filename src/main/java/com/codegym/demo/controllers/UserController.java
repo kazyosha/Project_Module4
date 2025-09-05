@@ -12,6 +12,8 @@ import com.codegym.demo.services.RoleService;
 import com.codegym.demo.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,11 +30,13 @@ public class UserController {
     private final UserService userService;
     private final DepartmentService departmentService;
     private final RoleService roleService;
+    private final HttpSession httpSession;
 
-    public UserController(UserService userService, DepartmentService departmentService, RoleService roleService) {
+    public UserController(UserService userService, DepartmentService departmentService, RoleService roleService, HttpSession httpSession) {
         this.userService = userService;
         this.departmentService = departmentService;
         this.roleService = roleService;
+        this.httpSession = httpSession;
     }
 
     @GetMapping
@@ -41,11 +45,12 @@ public class UserController {
             @RequestParam(value = "departmentId", required = false) String departmentIdStr,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam Map<String, String> params,
-            HttpSession session,
+
             Model model) {
 
-//        User currentUser = (User) session.getAttribute("currentUser");
-//        model.addAttribute("user", currentUser);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        httpSession.setAttribute("email", email);
 
         int size = 5;
         page = Math.max(page, 1);

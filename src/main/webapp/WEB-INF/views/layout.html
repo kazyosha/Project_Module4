@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        xmlns:th="http://www.thymeleaf.org" th:inline="text">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" th:inline="text">
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
@@ -10,6 +9,12 @@
           crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
         .navbar-nav .nav-link {
             transition: color 0.3s ease, transform 0.2s ease;
         }
@@ -19,10 +24,9 @@
             transform: translateY(-2px);
         }
 
-        /* Hiệu ứng dropdown */
         .dropdown-menu {
             border-radius: 0.75rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             transition: all 0.3s ease;
         }
 
@@ -30,12 +34,11 @@
             background-color: #f0f0f0;
         }
 
-        /* Content spacing */
         main {
             padding: 2rem 0;
+            flex: 1;
         }
 
-        /* Footer */
         footer {
             background: #212529;
             color: #f8f9fa;
@@ -53,20 +56,25 @@
         }
     </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
-<div class="flex-grow-1">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Admin Dashboard</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Left menu -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Home</a>
-                </li>
+                <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        User Management
-                    </a>
+                       data-bs-toggle="dropdown" aria-expanded="false">User Management</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="/admin">Show list</a></li>
                         <li><a class="dropdown-item" href="/admin/user/create">Add new</a></li>
@@ -75,63 +83,82 @@
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Department Management
-                    </a>
+                       data-bs-toggle="dropdown" aria-expanded="false">Department Management</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="/admin/department">Show list</a></li>
                         <li><a class="dropdown-item" href="/admin/department/create">Add new</a></li>
                     </ul>
                 </li>
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Product management
-                    </a>
+                       data-bs-toggle="dropdown" aria-expanded="false">Product Management</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="/admin/products">Show list product</a></li>
                         <li><a class="dropdown-item" href="/admin/products/create">Add new product</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <form id="form-change-lang" action="" method="get">
-                        <select class="form-select" name="lang" id="select-lang" aria-label="Default select example"></select>
-                    </form>
-                </li>
             </ul>
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item me-3 d-flex align-items-center" th:if="${currentUser != null}">
-                    <p class="text-light fw-semibold mb-0">
-                        <span th:text="'Welcome, ' + ${currentUser.name} + ' (' + ${currentUser.role.name} + ')'"></span>
-                    </p>
-                </li>
-                <li class="nav-item" th:if="${currentUser != null}">
-                    <a th:href="@{/auth/logout}" class="btn btn-outline-light btn-sm">Logout</a>
-                </li>
 
-                <!-- Nếu chưa đăng nhập -->
-                <li class="nav-item" th:unless="${currentUser != null}">
-                    <a th:href="@{/auth/login}" class="btn btn-outline-light btn-sm me-2">Login</a>
-                    <a th:href="@{/auth/register}" class="btn btn-outline-light btn-sm">Register</a>
-                </li>
-            </ul>
+            <!-- Right menu -->
+            <div class="d-flex align-items-center">
+                <form id="form-change-lang" action="" method="get" class="me-3">
+                    <select class="form-select" name="lang" id="select-lang"></select>
+                </form>
+
+                <div th:if="${session.email != null}" class="dropdown">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Xin chào: <span th:text="${session.email}">User</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="#">Change password</a></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="px-3 py-1">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button class="btn btn-link p-0 m-0 w-100 text-start" type="submit">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </nav>
-    <!-- Content -->
-    <main class="container my-4">
-        <div layout:fragment="content">
+    </div>
+</nav>
 
-        </div>
-    </main>
-</div>
+<!-- Main content -->
+<main class="container my-4">
+    <div layout:fragment="content">
+        <!-- Nội dung từng trang -->
+    </div>
+</main>
 
+<!-- Footer -->
 <footer class="text-center mt-auto bg-dark text-light py-3">
-    <div class="container">
-        <p class="mb-1">© 2025 My Admin Dashboard</p>
-        <p class="mb-0">
-            <a href="#" class="text-secondary text-decoration-none">Privacy Policy</a> ·
-            <a href="#" class="text-secondary text-decoration-none">Terms of Service</a>
-        </p>
+    <div class="container d-flex justify-content-between">
+        <div>
+            <h6>Admin Dashboard</h6>
+            <p class="mb-1">Comprehensive management system for users, departments, and products.</p>
+        </div>
+        <div>
+            <h6>Quick Links</h6>
+            <ul class="list-unstyled mb-0">
+                <li><a href="/admin">User Management</a></li>
+                <li><a href="/admin/department">Department Management</a></li>
+                <li><a href="/admin/products">Product Management</a></li>
+            </ul>
+        </div>
+        <div>
+            <h6>Support</h6>
+            <ul class="list-unstyled mb-0">
+                <li><a href="#">Documentation</a></li>
+                <li><a href="#">Help Center</a></li>
+                <li><a href="#">Contact Support</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="text-center mt-2">
+        © 2025 Admin Dashboard. All rights reserved.
     </div>
 </footer>
 
