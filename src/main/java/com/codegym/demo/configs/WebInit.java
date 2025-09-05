@@ -10,17 +10,17 @@ public class WebInit extends AbstractAnnotationConfigDispatcherServletInitialize
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[]{JpaConfig.class}; //No root context configuration
+        return new Class<?>[]{JpaConfig.class, SecurityConfig.class};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[]{WebConfig.class}; // Use WebConfig for servlet context
+        return new Class<?>[]{WebConfig.class};
     }
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/"}; // Map all requests to the DispatcherServlet
+        return new String[]{"/"};
     }
 
     @Override

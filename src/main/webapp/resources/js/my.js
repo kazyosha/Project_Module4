@@ -20,7 +20,7 @@ function renderOptionLang(currentLang) {
 
 function getCookie(name) {
     const nameEQ = name + "=";
-    const ca = document.cookie.split(';'); // Split all cookies into an array
+    const ca = document.cookie.split(';');
 
     for (let i = 0; i < ca.length; i++) {
         let c = ca[i];

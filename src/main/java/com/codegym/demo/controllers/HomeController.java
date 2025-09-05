@@ -16,21 +16,21 @@ import java.util.List;
 public class HomeController {
 
     private final ProductService productService;
+
     public HomeController(ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping
     public String home(HttpSession session, Model model) {
-        User currentUser = (User) session.getAttribute("currentUser");
-        if (currentUser == null) {
-            return "redirect:auth/login";
-        }
-        model.addAttribute("user", currentUser);
+
+//        User currentUser = (User) session.getAttribute("currentUser");
+
         List<Product> newProducts = productService.getNewProducts();
         List<Product> featuredProducts = productService.getFeaturedProducts();
         List<Product> saleProducts = productService.getSaleProducts();
 
+//        model.addAttribute("user", currentUser);
         model.addAttribute("newProducts", newProducts);
         model.addAttribute("featuredProducts", featuredProducts);
         model.addAttribute("saleProducts", saleProducts);

@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public class CreateUserDTO {
 
     @NotBlank(message = "Tên không được để trống")
@@ -31,7 +33,7 @@ public class CreateUserDTO {
     @ValidImage
     private MultipartFile image;
     private Long departmentId;
-    private Long roleId;
+    private List<Long> roleId;
 
     public CreateUserDTO() {
     }
@@ -91,11 +93,11 @@ public class CreateUserDTO {
         this.departmentId = departmentId;
     }
 
-    public Long getRoleId() {
+    public List<Long> getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Long roleId) {
+    public void setRoleId(List<Long> roleId) {
         this.roleId = roleId;
     }
 }

@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public class EditUserDTO {
     private int id;
 
@@ -17,10 +19,8 @@ public class EditUserDTO {
 
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không hợp lệ")
-    @UniqueValue(field = "email", message = "Email đã tồn tại")
     private String email;
 
-    @UniqueValue(field = "phone", message = "Số điện thoại đã tồn tại")
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
     private String phone;
@@ -28,7 +28,7 @@ public class EditUserDTO {
     @ValidImage
     private MultipartFile image;
     private Long departmentId;
-    private Long roleId;
+    private List<Long> roleId;
 
     public EditUserDTO() {
     }
@@ -88,10 +88,10 @@ public class EditUserDTO {
         this.departmentId = departmentId;
     }
 
-    public Long getRoleId() {
+    public List<Long> getRoleId() {
         return roleId;
     }
-    public void setRoleId(Long roleId) {
+    public void setRoleId(List<Long> roleId) {
         this.roleId = roleId;
     }
 }

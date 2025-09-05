@@ -81,8 +81,7 @@
 
                     <div class="col-md-6 mb-3">
                         <label for="roles" class="form-label">Role</label>
-                        <select th:field="*{roleId}" class="form-select" id="roles">
-                            <option value="">Choose a role</option>
+                        <select th:field="*{roleId}" multiple="multiple" class="form-select" id="roles">
                             <option th:each="role : ${roles}"
                                     th:value="${role.id}"
                                     th:text="${role.name}"></option>

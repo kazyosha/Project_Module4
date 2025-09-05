@@ -44,15 +44,8 @@ public class UserController {
             HttpSession session,
             Model model) {
 
-        User currentUser = (User) session.getAttribute("currentUser");
-        if (currentUser == null) {
-            return "redirect:/auth/login";
-        }
-
-        if (!"ADMIN".equalsIgnoreCase(currentUser.getRole().getName())) {
-            return "redirect:/home";
-        }
-        model.addAttribute("user", currentUser);
+//        User currentUser = (User) session.getAttribute("currentUser");
+//        model.addAttribute("user", currentUser);
 
         int size = 5;
         page = Math.max(page, 1);
@@ -153,6 +146,7 @@ public class UserController {
                             BindingResult result, Model model) throws IOException {
         if (result.hasErrors()) {
             model.addAttribute("departments", departmentService.getAllDepartments());
+            model.addAttribute("roles", roleService.getAllRoles());
             return "admin/create-user";
         }
         userService.storeUser(createUserDTO);
@@ -187,7 +181,7 @@ public class UserController {
     @PostMapping("/user/{id}/edit")
     public String updateUser(@PathVariable("id") int id,
                              @Valid @ModelAttribute("user") EditUserDTO editUserDTO,
-                             BindingResult result, Model model) {
+                             BindingResult result, Model model) throws IOException {
         UserDTO user = userService.getUserById(id);
         if (user == null) {
             return "redirect:/admin";

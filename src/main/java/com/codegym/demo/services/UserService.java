@@ -20,8 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -38,162 +40,164 @@ public class UserService {
         this.roleRepository = roleRepository;
     }
 
-    public ListUserResponse getAllUsers(int pageNumber, int pageSize) {
+    private String getRoleNames(User user) {
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            return user.getRoles()
+                    .stream()
+                    .map(Role::getName)
+                    .collect(Collectors.joining(", "));
+        }
+        return "No Role";
+    }
 
+    private UserDTO mapToDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId().intValue());
+        dto.setUsername(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setPhone(user.getPhone());
+        dto.setImageUrl(user.getImageUrl());
+        dto.setDepartmentName(user.getDepartment() != null ? user.getDepartment().getName() : "No Department");
+        dto.setRoleName(Collections.singletonList(getRoleNames(user)));
+        return dto;
+    }
+
+    public ListUserResponse getAllUsers(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
         Page<User> data = userRepository.findAll(pageable);
 
-        List<User> users = data.getContent();
+        List<UserDTO> userDTOs = data.getContent()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
 
-        List<UserDTO> userDTOs = new ArrayList<>();
-        for (User user : users) {
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(user.getId().intValue());
-            userDTO.setUsername(user.getName());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setPhone(user.getPhone());
-            userDTO.setImageUrl(user.getImageUrl());
+        ListUserResponse response = new ListUserResponse();
+        response.setTotalPage(data.getTotalPages());
+        response.setCurrentPage(data.getNumber() + 1);
+        response.setUsers(userDTOs);
 
-            String nameDepartment = user.getDepartment() != null ? user.getDepartment().getName() : "No Department";
-            String nameRole = user.getRole() != null ? user.getRole().getName() : "No Role";
-            userDTO.setDepartmentName(nameDepartment);
-            userDTO.setRoleName(nameRole);
-
-            userDTOs.add(userDTO);
-
-        }
-
-        ListUserResponse listUserResponse = new ListUserResponse();
-        listUserResponse.setTotalPage(data.getTotalPages());
-        listUserResponse.setCurrentPage(data.getNumber() + 1);
-        listUserResponse.setUsers(userDTOs);
-
-        return listUserResponse;
+        return response;
     }
 
     public void deleteById(int id) {
-        Optional<User> user = userRepository.findById((long) (id));
-        if (user.isPresent()) {
-            User currentUser = user.get();
-            fileManager.deleteFile(uploadDir + "/" + currentUser.getImageUrl());
-            userRepository.delete(currentUser);
+        Optional<User> userOpt = userRepository.findById((long) id);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            fileManager.deleteFile(uploadDir + "/" + user.getImageUrl());
+            userRepository.delete(user);
         } else {
             throw new RuntimeException("User not found with id: " + id);
         }
     }
 
     public void storeUser(CreateUserDTO createUserDTO) throws IOException {
-        String username = createUserDTO.getUsername();
-        String password = createUserDTO.getPassword();
-        String email = createUserDTO.getEmail();
-        String phone = createUserDTO.getPhone();
-
         User newUser = new User();
-        newUser.setName(username);
-        newUser.setEmail(email);
-        newUser.setPassword(password);
-        newUser.setPhone(phone);
+        newUser.setName(createUserDTO.getUsername());
+        newUser.setEmail(createUserDTO.getEmail());
+        newUser.setPassword(createUserDTO.getPassword());
+        newUser.setPhone(createUserDTO.getPhone());
 
-        Long departmentId = createUserDTO.getDepartmentId();
-        Long roleId = createUserDTO.getRoleId();
+        // Upload ảnh
         MultipartFile file = createUserDTO.getImage();
-
         if (!file.isEmpty()) {
             String fileName = fileManager.uploadFile(uploadDir, file);
-            System.out.println("Saved file at: " + uploadDir + "/" + fileName);
             newUser.setImageUrl(fileName);
         }
 
-        if (departmentId != null) {
-            Department department = departmentRepository.findById(departmentId).orElse(null);
-            if (department != null) {
-                newUser.setDepartment(department);
-            }
+        // Gán Department
+        if (createUserDTO.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(createUserDTO.getDepartmentId()).orElse(null);
+            newUser.setDepartment(department);
         }
-        if (roleId != null) {
-            Role role = roleRepository.findById(roleId).orElse(null);
-            if (role != null) {
-                newUser.setRole(role);
-            } else {
-                throw new RuntimeException("Role not found with id: " + roleId);
-            }
+
+        // Gán Roles (n-n)
+        if (createUserDTO.getRoleId() != null && !createUserDTO.getRoleId().isEmpty()) {
+            List<Role> roles = roleRepository.findAllById(createUserDTO.getRoleId());
+            newUser.setRoles(roles);
         }
+
         userRepository.save(newUser);
     }
 
     public UserDTO getUserById(int id) {
-        Optional<User> user = userRepository.findById((long) id);
-        if (user.isPresent()) {
-            User currentUser = user.get();
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(currentUser.getId().intValue());
-            userDTO.setUsername(currentUser.getName());
-            userDTO.setEmail(currentUser.getEmail());
-            userDTO.setPhone(currentUser.getPhone());
-            userDTO.setImageUrl(currentUser.getImageUrl());
-            userDTO.setDepartmentId(currentUser.getDepartment() != null ? currentUser.getDepartment().getId() : null);
-            userDTO.setDepartmentName(currentUser.getDepartment() != null ? currentUser.getDepartment().getName() : "No Department");
-            userDTO.setRoleId(currentUser.getRole() != null ? currentUser.getRole().getId() : null);
-            userDTO.setRoleName(currentUser.getRole() != null ? currentUser.getRole().getName() : "No Role");
-            return userDTO;
+        Optional<User> userOpt = userRepository.findById((long) id);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            UserDTO dto = new UserDTO();
+            dto.setId(user.getId().intValue());
+            dto.setUsername(user.getName());
+            dto.setEmail(user.getEmail());
+            dto.setPhone(user.getPhone());
+            dto.setImageUrl(user.getImageUrl());
+
+            // map department
+            if (user.getDepartment() != null) {
+                dto.setDepartmentId(user.getDepartment().getId());
+                dto.setDepartmentName(user.getDepartment().getName());
+            }
+
+            // map roles
+            if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+                List<Long> roleIds = user.getRoles()
+                        .stream()
+                        .map(Role::getId)
+                        .toList();
+                dto.setRoleId(roleIds);
+
+                // nếu cần cả tên
+                String roleNames = user.getRoles()
+                        .stream()
+                        .map(Role::getName)
+                        .collect(Collectors.joining(", "));
+                dto.setRoleName(Collections.singletonList(roleNames));
+            }
+
+            return dto;
         }
         return null;
     }
 
-    //
-    public void updateUser(int id, EditUserDTO editUserDTO) {
-        Optional<User> user = userRepository.findById((long) id);
-        if (user.isPresent()) {
-            User currentUser = user.get();
+    public void updateUser(int id, EditUserDTO editUserDTO) throws IOException {
+        Optional<User> userOpt = userRepository.findById((long) id);
+        if (userOpt.isPresent()) {
+            User currentUser = userOpt.get();
             currentUser.setName(editUserDTO.getUsername());
             currentUser.setEmail(editUserDTO.getEmail());
             currentUser.setPhone(editUserDTO.getPhone());
 
-            Long departmentId = editUserDTO.getDepartmentId();
-            Long roleId = editUserDTO.getRoleId();
-            if (departmentId != null) {
-                Department department = departmentRepository.findById(departmentId).orElse(null);
-                if (department != null) {
-                    currentUser.setDepartment(department);
-                }
+            // Cập nhật department
+            if (editUserDTO.getDepartmentId() != null) {
+                Department department = departmentRepository.findById(editUserDTO.getDepartmentId()).orElse(null);
+                currentUser.setDepartment(department);
             }
-            if (roleId != null) {
-                Role role = roleRepository.findById(roleId).orElse(null);
-                if (role != null) {
-                    currentUser.setRole(role);
-                } else {
-                    throw new RuntimeException("Role not found with id: " + roleId);
-                }
+
+            // Cập nhật roles (n-n)
+            if (editUserDTO.getRoleId() != null && !editUserDTO.getRoleId().isEmpty()) {
+                List<Role> roles = roleRepository.findAllById(editUserDTO.getRoleId());
+                currentUser.setRoles(roles);
             }
+
+            // Cập nhật ảnh
             MultipartFile file = editUserDTO.getImage();
-            if (!file.isEmpty()) {
+            if (file != null && !file.isEmpty()) {
                 fileManager.deleteFile(uploadDir + "/" + currentUser.getImageUrl());
                 String fileName = fileManager.uploadFile(uploadDir, file);
                 currentUser.setImageUrl(fileName);
             }
+
             userRepository.save(currentUser);
         }
     }
+
     public ListUserResponse getUsersByDepartment(Long departmentId, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
         Page<User> data = userRepository.findByDepartmentId(departmentId, pageable);
 
-        List<UserDTO> userDTOs = new ArrayList<>();
-        for (User user : data.getContent()) {
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(user.getId().intValue());
-            userDTO.setUsername(user.getName());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setPhone(user.getPhone());
-            userDTO.setImageUrl(user.getImageUrl());
-
-            String nameDepartment = user.getDepartment() != null ? user.getDepartment().getName() : "No Department";
-            String nameRole = user.getRole() != null ? user.getRole().getName() : "No Role";
-            userDTO.setDepartmentName(nameDepartment);
-            userDTO.setRoleName(nameRole);
-
-            userDTOs.add(userDTO);
-        }
+        List<UserDTO> userDTOs = data.getContent()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
 
         ListUserResponse response = new ListUserResponse();
         response.setTotalPage(data.getTotalPages());
@@ -207,18 +211,10 @@ public class UserService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
         Page<User> data = userRepository.findByNameContainingIgnoreCase(keyword, pageable);
 
-        List<UserDTO> userDTOs = new ArrayList<>();
-        for (User user : data.getContent()) {
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(user.getId().intValue());
-            userDTO.setUsername(user.getName());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setPhone(user.getPhone());
-            userDTO.setImageUrl(user.getImageUrl());
-            userDTO.setDepartmentName(user.getDepartment() != null ? user.getDepartment().getName() : "No Department");
-            userDTO.setRoleName(user.getRole() != null ? user.getRole().getName() : "No Role");
-            userDTOs.add(userDTO);
-        }
+        List<UserDTO> userDTOs = data.getContent()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
 
         ListUserResponse response = new ListUserResponse();
         response.setTotalPage(data.getTotalPages());
@@ -232,18 +228,10 @@ public class UserService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
         Page<User> data = userRepository.findByNameContainingIgnoreCaseAndDepartmentId(keyword, departmentId, pageable);
 
-        List<UserDTO> userDTOs = new ArrayList<>();
-        for (User user : data.getContent()) {
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(user.getId().intValue());
-            userDTO.setUsername(user.getName());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setPhone(user.getPhone());
-            userDTO.setImageUrl(user.getImageUrl());
-            userDTO.setDepartmentName(user.getDepartment() != null ? user.getDepartment().getName() : "No Department");
-            userDTO.setRoleName(user.getRole() != null ? user.getRole().getName() : "No Role");
-            userDTOs.add(userDTO);
-        }
+        List<UserDTO> userDTOs = data.getContent()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
 
         ListUserResponse response = new ListUserResponse();
         response.setTotalPage(data.getTotalPages());
@@ -252,5 +240,4 @@ public class UserService {
 
         return response;
     }
-
 }

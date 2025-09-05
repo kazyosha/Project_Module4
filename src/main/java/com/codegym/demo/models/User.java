@@ -2,6 +2,8 @@ package com.codegym.demo.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -28,9 +30,13 @@ public class User {
     @JoinColumn(name = "department_id", nullable = true)
     private Department department;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = true)
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles;
 
     public User() {
     }
@@ -91,11 +97,11 @@ public class User {
         return department;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public Role getRole() {
-        return role;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }

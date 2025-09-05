@@ -115,17 +115,19 @@
                 </div>
             </div>
             <div class="card-body">
-                <div th:if="${error}" class="alert alert-danger" role="alert">
-                    <span th:text="${error}">Error message goes here</span>
+                <div th:if="${param.error}">
+                    <p style="color:red;">Email hoặc mật khẩu không chính xác!</p>
                 </div>
                 <form action="/auth/login" method="post">
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}"/>
                     <!-- Email input -->
                     <div class="input-group form-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         </div>
-                        <input type="email" name="email" class="form-control" placeholder="Email"
-                               th:value="${rememberedEmail}" required>
+                        <input type="email" name="email" class="form-control" placeholder="Email" required>
                     </div>
 
                     <!-- Password input -->

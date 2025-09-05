@@ -39,46 +39,6 @@ public class AuthController {
         return "auth/login";
     }
 
-    @PostMapping("/login")
-    public String processLogin(
-            @RequestParam("email") String email,
-            @RequestParam("password") String password,
-            @RequestParam(value = "rememberMe", required = false) String rememberMe,
-            HttpServletResponse response,
-            HttpSession session,
-            Model model) {
-
-        Optional<User> user = authService.login(email, password);
-        System.out.println(user);
-
-        if (user.isPresent()) {
-            User loggedInUser = user.get();
-            session.setAttribute("currentUser", loggedInUser);
-
-            if ("on".equals(rememberMe)) {
-                Cookie cookie = new Cookie("rememberEmail", loggedInUser.getEmail());
-                cookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
-                cookie.setPath("/");
-                response.addCookie(cookie);
-            } else {
-                Cookie cookie = new Cookie("rememberEmail", null);
-                cookie.setMaxAge(0);
-                cookie.setPath("/");
-                response.addCookie(cookie);
-            }
-
-            String roleName = loggedInUser.getRole().getName();
-            if ("ADMIN".equalsIgnoreCase(roleName)) {
-                return "redirect:/admin";
-            } else {
-                return "redirect:/home";
-            }
-        } else {
-            model.addAttribute("error", "Sai email hoặc password!");
-            return "auth/login";
-        }
-    }
-
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

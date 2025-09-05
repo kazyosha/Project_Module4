@@ -19,4 +19,5 @@ public interface IUserRepository extends PagingAndSortingRepository<User , Long>
     Page<User> findByDepartmentId(Long departmentId, Pageable pageable);
     Page<User> findByNameContainingIgnoreCase(String name, Pageable pageable);
     Page<User> findByNameContainingIgnoreCaseAndDepartmentId(String name, Long departmentId, Pageable pageable);
+    Optional<User> findByEmail(String email);
 }

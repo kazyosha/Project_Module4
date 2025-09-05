@@ -83,11 +83,11 @@
                     <button class="btn btn-outline-primary btn-sm" type="submit">Search</button>
                 </form>
 
-                <div th:if="${session.currentUser.getName() != null}">
-                    <span>Welcome, <strong th:text="${session.currentUser.getName()}">User</strong></span>
+                <div th:if="${user != null}">
+                    <span>Welcome, <strong th:text="${user.name}">User</strong></span>
                     <a class="btn btn-outline-danger btn-sm ms-2" th:href="@{/auth/logout}">Logout</a>
                 </div>
-                <div th:unless="${session.currentUser.getName() != null}">
+                <div th:unless="${user != null}">
                     <a class="btn btn-outline-primary btn-sm me-2" th:href="@{/auth/login}">Login</a>
                     <a class="btn btn-outline-secondary btn-sm" th:href="@{/auth/register}">Register</a>
                 </div>

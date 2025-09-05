@@ -57,27 +57,24 @@
                 <!-- Department + Role -->
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="departments" class="form-label">Department</label>
-                        <select th:field="*{departmentId}"
-                                th:classappend="${#fields.hasErrors('departmentId')}? 'is-invalid' : ''"
-                                class="form-select" id="departments">
+                        <label class="form-label">Department</label>
+                        <select th:field="*{departmentId}" class="form-select">
                             <option value="">Choose a department</option>
                             <option th:each="department : ${departments}"
                                     th:value="${department.id}"
-                                    th:text="${department.name}"></option>
+                                    th:text="${department.name}">
+                            </option>
                         </select>
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="roles" class="form-label">Role</label>
-                        <select th:field="*{roleId}"
-                                th:classappend="${#fields.hasErrors('roleId')}? 'is-invalid' : ''"
-                                class="form-select" id="roles">
-                            <option value="">Choose a role</option>
+                        <label class="form-label">Roles</label>
+                        <select th:field="*{roleId}" class="form-select" multiple>
                             <option th:each="role : ${roles}"
                                     th:value="${role.id}"
-                                    th:text="${role.name}"></option>
+                                    th:text="${role.name}">
+                            </option>
                         </select>
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('roleId')}" th:errors="*{roleId}"></div>
                     </div>
